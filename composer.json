@@ -1,0 +1,17 @@
+{
+    "name": "lewisqic/sh-common",
+    "description": "Commonly used code across all microservices for SimpleHub framework.",
+    "authors": [
+        {
+            "name": "Devin Lewis",
+            "email": "devinlewis@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Lewisqic\\SHCommon\\": "src/"
+        }
+    }
+}
