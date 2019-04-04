@@ -2,6 +2,8 @@
 
 namespace Lewisqic\SHCommon;
 
+use Lewisqic\SHCommon\Exceptions\Handler;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -16,8 +18,19 @@ class SHCommonServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+        // bind our custom exception handler
+        $this->app->singleton(
+            ExceptionHandler::class,
+            Handler::class
+        );
+
+        // require custom functions file
         require_once(__DIR__ . '/functions.php');
+
+        // import any custom routes
         $this->loadRoutesFrom(__DIR__ . '/routes.php');
+
     }
 
     /**
