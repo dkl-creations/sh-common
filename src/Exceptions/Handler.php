@@ -46,7 +46,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        die('custom handler is working!');
         $parentRender = parent::render($request, $exception);
 
         // if parent returns a JsonResponse
@@ -58,6 +57,8 @@ class Handler extends ExceptionHandler
         return new JsonResponse([
             'success' => false,
             'message' => method_exists($exception, 'getMessage') ? $exception->getMessage() : 'Server Error',
+            'file' => method_exists($exception, 'getFile') ? $exception->getFile() : 'Unknown File',
+            'line' => method_exists($exception, 'getLine') ? $exception->getLine() : 'Unknown Line',
         ], $parentRender->status());
     }
 }
