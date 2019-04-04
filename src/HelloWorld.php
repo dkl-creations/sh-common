@@ -7,7 +7,7 @@ class HelloWorld
 
     public static function test()
     {
-        return 'Hello World, Composer!';
+        return 'Hello World, Composer Devin!';
     }
-    
+
 }
