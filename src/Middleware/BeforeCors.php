@@ -17,10 +17,13 @@ class BeforeCors
     public function handle($request, Closure $next)
     {
         if ($request->getMethod() == 'OPTIONS') {
-            return response('');
+            $response = response('');
+        } else {
+            $response = $next($request);
         }
-        return $next($request)
-            ->header('Access-Control-Allow-Origin', '*')
-            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+        $response->headers->set('Access-Control-Allow-Headers', 'authorization');
+        return $response;
     }
 }
