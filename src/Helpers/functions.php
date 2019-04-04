@@ -1,8 +1,8 @@
 <?php
 
 // require Kint debugging library on local only (only include it if it exists)
-if ( file_exists(__DIR__ . '/../../../../lab/kint_init.php') ) {
-    require_once(__DIR__ . '/../../../../lab/kint_init.php');
+if ( file_exists(__DIR__ . '/../../../../../lab/kint_init.php') ) {
+    require_once(__DIR__ . '/../../../../../lab/kint_init.php');
 }
 
 /**
