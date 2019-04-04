@@ -1,6 +1,7 @@
 {
     "name": "lewisqic/sh-common",
     "description": "Commonly used code across all microservices for SimpleHub framework.",
+    "license": "MIT",
     "authors": [
         {
             "name": "Devin Lewis",
