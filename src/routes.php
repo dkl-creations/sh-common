@@ -1,9 +1,5 @@
 <?php
 
-$this->app->options('user', function() {
+/*$this->app->router->options('user', function() {
 
-});
-
-$router->options('test', function() {
-
-});
+});*/
