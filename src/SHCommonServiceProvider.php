@@ -16,6 +16,7 @@ class SHCommonServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        require_once(__DIR__ . '/functions.php');
         $this->loadRoutesFrom(__DIR__ . '/routes.php');
     }
 
