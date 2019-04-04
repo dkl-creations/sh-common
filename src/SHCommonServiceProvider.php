@@ -26,7 +26,7 @@ class SHCommonServiceProvider extends ServiceProvider
         );
 
         // require custom functions file
-        require_once(__DIR__ . '/functions.php');
+        require_once(__DIR__ . '/Helpers/functions.php');
 
         // import any custom routes
         $this->loadRoutesFrom(__DIR__ . '/routes.php');
