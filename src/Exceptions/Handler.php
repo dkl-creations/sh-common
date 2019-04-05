@@ -59,6 +59,7 @@ class Handler extends ExceptionHandler
             'message' => method_exists($exception, 'getMessage') ? $exception->getMessage() : 'Server Error',
             'file' => method_exists($exception, 'getFile') ? $exception->getFile() : 'Unknown File',
             'line' => method_exists($exception, 'getLine') ? $exception->getLine() : 'Unknown Line',
+            'code' => method_exists($exception, 'getStatusCode') ? $exception->getStatusCode() : 'Unknown Status Code',
         ], $parentRender->status());
     }
 }
