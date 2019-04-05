@@ -5,6 +5,8 @@ namespace Lewisqic\SHCommon\Middleware;
 use Closure;
 use Illuminate\Contracts\Auth\Factory as Auth;
 use Illuminate\Auth\GenericUser;
+use Illuminate\Encryption\Encrypter;
+use Dotenv\Dotenv;
 use Lewisqic\SHCommon\Helpers\Api;
 
 class Authenticate
