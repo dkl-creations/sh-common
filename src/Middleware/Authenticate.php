@@ -5,10 +5,7 @@ namespace Lewisqic\SHCommon\Middleware;
 use Closure;
 use Illuminate\Contracts\Auth\Factory as Auth;
 use Illuminate\Auth\GenericUser;
-use Illuminate\Encryption\Encrypter;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
-use Dotenv\Dotenv;
+use Lewisqic\SHCommon\Helpers\Api;
 
 class Authenticate
 {
@@ -62,26 +59,13 @@ class Authenticate
                     $is_authorized = true;
                 }
             } else {
-                
-                try {
-                    $http = new Client;
-                    $response = $http->get(api_url('v1/user', 'identity'), [
-                        'headers' => [
-                            'Accept' => $request->header('accept'),
-                            'Authorization' => $request->header('authorization'),
-                        ]
-                    ]);
-                    $user = json_decode((string) $response->getBody(), true);
-                    if ( !empty($user['id']) ) {
-                        $is_authorized = true;
-                        $this->auth->viaRequest('api', function ($request) use ($user) {
-                            return new GenericUser($user);
-                        });
-                    }
-                } catch (BadResponseException $e) {
-                    // do nothing, as we aren't authorized
+                $user = Api::get('identity', 'v1/user');
+                if ( !empty($user['id']) ) {
+                    $is_authorized = true;
+                    $this->auth->viaRequest('api', function ($request) use ($user) {
+                        return new GenericUser($user);
+                    });
                 }
-
             }
 
         }
