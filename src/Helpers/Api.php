@@ -2,7 +2,6 @@
 
 namespace Lewisqic\SHCommon\Helpers;
 
-use Illuminate\Http\Request;
 use Illuminate\Encryption\Encrypter;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
