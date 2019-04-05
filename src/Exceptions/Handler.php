@@ -53,7 +53,7 @@ class Handler extends ExceptionHandler
         if ($parentRender instanceof JsonResponse) {
             return $parentRender;
         }
-        $code = method_exists($exception, 'getStatusCode') ? $exception->getStatusCode() : 'Unknown Status Code';
+        $code = method_exists($exception, 'getStatusCode') ? $exception->getStatusCode() : 403;
         $message = method_exists($exception, 'getMessage') ? $exception->getMessage() : 'Unknown Server Error';
         if (empty($message) && $code == 404) {
             $message = 'Page Not Found';
