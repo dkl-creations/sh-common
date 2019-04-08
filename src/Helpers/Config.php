@@ -11,7 +11,7 @@ class Config
      */
     public static function loadValues($dir)
     {
-        if (file_exists($dir . '/../../config_map.php')) {
+        if (file_exists($dir . '/../../config_map.php') && isset($_SERVER['HTTP_HOST'])) {
             $config_map = [];
             require_once($dir . '/../../config_map.php');
             $host_parts = explode('.', $_SERVER['HTTP_HOST']);
