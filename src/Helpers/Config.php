@@ -15,7 +15,7 @@ class Config
             $config_map = [];
             require_once($dir . '/../../config_map.php');
             $host_parts = explode('.', $_SERVER['HTTP_HOST']);
-            $site = isset($host_parts[count($host_parts) - 3]) ? $host_parts[count($host_parts) - 3] : null;
+            $site = isset($host_parts[count($host_parts) - 3]) ? $host_parts[count($host_parts) - 3] : $host_parts[count($host_parts) - 2];
             $service = isset($host_parts[count($host_parts) - 4]) ? $host_parts[count($host_parts) - 4] : 'web';
             if (isset($config_map['sites'][$site])) {
                 $config = $config_map['sites'][$site];
