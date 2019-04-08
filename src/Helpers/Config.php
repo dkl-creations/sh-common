@@ -17,7 +17,13 @@ class Config
             $host_parts = explode('.', $_SERVER['HTTP_HOST']);
             $site = isset($host_parts[count($host_parts) - 3]) ? $host_parts[count($host_parts) - 3] : $host_parts[count($host_parts) - 2];
             $service = isset($host_parts[count($host_parts) - 4]) ? $host_parts[count($host_parts) - 4] : 'web';
-            if (isset($config_map['sites'][$site])) {
+            if (isset($config_map['services'][$service])) {
+                $config = $config_map['services'][$service];
+                $db_name = $config_map['db_names'][$service];
+                putenv('DB_DATABASE=' . $db_name);
+                putenv('DB_USERNAME=' . $config['DB_USERNAME']);
+                putenv('DB_PASSWORD=' . $config['DB_PASSWORD']);
+            } elseif (isset($config_map['sites'][$site])) {
                 $config = $config_map['sites'][$site];
                 $db_name = $config_map['db_names'][$service];
                 putenv('DB_DATABASE=' . $config['DB_USERNAME'] . '_' . $db_name);
