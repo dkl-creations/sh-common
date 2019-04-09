@@ -21,14 +21,14 @@ class Config
                 $site = isset($host_parts[count($host_parts) - 3]) ? $host_parts[count($host_parts) - 3] : $host_parts[count($host_parts) - 2];
                 $service = isset($host_parts[count($host_parts) - 4]) ? $host_parts[count($host_parts) - 4] : 'web';
 
-                if ( isset($config_map['sites'][$site]) ) {
-                    $config = $config_map['sites'][$site];
-                    $db_database = $config['DB_USERNAME'] . '_' . $config_map['db_names'][$service];
-                    $db_username = $config['DB_USERNAME'];
-                    $db_password = $config['DB_PASSWORD'];
-                } elseif ( isset($config_map['services'][$service]) ) {
+                if ( isset($config_map['services'][$service]) ) {
                     $config = $config_map['services'][$service];
                     $db_database = $config_map['db_names'][$service];
+                    $db_username = $config['DB_USERNAME'];
+                    $db_password = $config['DB_PASSWORD'];
+                } elseif ( isset($config_map['sites'][$site]) ) {
+                    $config = $config_map['sites'][$site];
+                    $db_database = $config['DB_USERNAME'] . '_' . $config_map['db_names'][$service];
                     $db_username = $config['DB_USERNAME'];
                     $db_password = $config['DB_PASSWORD'];
                 }
