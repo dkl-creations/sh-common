@@ -11,14 +11,15 @@ class Config
      */
     public static function loadDatabaseCredentials()
     {
-        
+
         if (isset($_SERVER['HTTP_HOST'])) {
             if ( file_exists(base_path() . '/../config_map.php') ) {
-                $config_map = include(base_path() . '/../config_map.php');
+                $config_map = [];
+                require_once(base_path() . '/../config_map.php');
 
                 $host_parts = explode('.', $_SERVER['HTTP_HOST']);
-                $site = isset($host_parts[count($host_parts) - 3]) ? $host_parts[count($host_parts) - 3] : $host_parts[count($host_parts) - 2];
-                $service = isset($host_parts[count($host_parts) - 4]) ? $host_parts[count($host_parts) - 4] : 'web';
+                $site = 'jrw'; // update this
+                $service = isset($host_parts[count($host_parts) - 3]) ? $host_parts[count($host_parts) - 3] : 'web';
 
                 if ( isset($config_map['services'][$service]) ) {
                     $config = $config_map['services'][$service];
