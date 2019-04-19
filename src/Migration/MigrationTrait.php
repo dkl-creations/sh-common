@@ -28,9 +28,8 @@ trait MigrationTrait
     protected function runFor($client = null)
     {
         if ( file_exists(base_path() . '/../config_map.php') ) {
-            $config_map = [];
             $service = env('APP_SUBDOMAIN');
-            require_once(base_path() . '/../config_map.php');
+            $config_map = include(base_path() . '/../config_map.php');
 
             if ($client == 'all') {
 

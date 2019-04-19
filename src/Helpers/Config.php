@@ -14,8 +14,7 @@ class Config
         
         if (isset($_SERVER['HTTP_HOST'])) {
             if ( file_exists(base_path() . '/../config_map.php') ) {
-                $config_map = [];
-                require_once(base_path() . '/../config_map.php');
+                $config_map = include(base_path() . '/../config_map.php');
 
                 $host_parts = explode('.', $_SERVER['HTTP_HOST']);
                 $site = isset($host_parts[count($host_parts) - 3]) ? $host_parts[count($host_parts) - 3] : $host_parts[count($host_parts) - 2];
