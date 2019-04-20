@@ -9,7 +9,7 @@ class Auth
 
     public static function generateToken()
     {
-        
+
     }
 
 }
