@@ -22,7 +22,7 @@ class AuthCache
         if (!empty($request->header('x-sh-token'))) {
             $crypt = new Encrypter(env('APP_KEY'), 'AES-256-CBC');
             $timestamp = $crypt->decrypt($request->header('x-sh-token'));
-            if ( is_int($timestamp) && time() <= $timestamp + 60 ) {
+            if ( is_int($timestamp) && time() <= $timestamp + 300 ) {
                 $is_authorized = true;
             }
         }
