@@ -42,23 +42,8 @@ class Api
                 $request_data = array_merge($request_data, $args[3]);
             }
 
-            if (!isset($request_data['headers']['Authorization'])) {
-
-                if (!empty($request->header('authorization'))) {
-                    $request_data['headers']['Authorization'] = $request->header('authorization');
-                    $request_data['headers']['Accept'] = $request->header('accept');
-                } else {
-                    $dotenv = Dotenv::create(base_path('../identity'));
-                    $identity_env = $dotenv->load();
-                    $crypt = new Encrypter($identity_env['APP_KEY'], 'AES-256-CBC');
-                    $token = $crypt->encrypt([
-                        'host'    => $_SERVER['HTTP_HOST'],
-                        'expires' => date('Y-m-d H:i:s', time() + (60 * 60)),
-                    ]);
-                    $request_data['headers']['Referer'] = $_SERVER['HTTP_HOST'] ?? '';
-                    $request_data['headers']['X-SH-Token'] = $token;
-                }
-
+            if (!isset($request_data['headers']['X-SH-Token']) && !empty($request->header('x-sh-token'))) {
+                $request_data['headers']['X-SH-Token'] = $request->header('x-sh-token');
             }
 
             $response = $http->request($method, $url, $request_data);
