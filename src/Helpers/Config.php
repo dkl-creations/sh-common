@@ -13,8 +13,8 @@ class Config
     {
 
         if (isset($_SERVER['HTTP_HOST'])) {
-            if ( file_exists(base_path() . '/../config_map.php') ) {
-                $config_map = include(base_path() . '/../config_map.php');
+            if ( file_exists(base_path('../config_map.php')) ) {
+                $config_map = include(base_path('../config_map.php'));
 
                 $host_parts = explode('.', $_SERVER['HTTP_HOST']);
                 if (count($host_parts) < 4) {

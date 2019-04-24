@@ -9,8 +9,8 @@ if ( file_exists(__DIR__ . '/../../../../../lab/kint_init.php') ) {
  * Generate an absoulte URL to a microservice URL
  */
 function api_url($service, $path) {
-    if ( file_exists(base_path() . '/../config_map.php') ) {
-        $config_map = include(base_path() . '/../config_map.php');
+    if ( file_exists(base_path('../config_map.php')) ) {
+        $config_map = include(base_path('../config_map.php'));
         $host_parts = explode('.', $_SERVER['HTTP_HOST']);
         $host_count = count($host_parts);
         if ( $service == null && isset($host_parts[$host_count - 3]) ) {

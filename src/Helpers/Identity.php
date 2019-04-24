@@ -14,7 +14,7 @@ class Identity
      */
     public static function createTokenCache($user)
     {
-        $config_map = include(base_path() . '/../config_map.php');
+        $config_map = include(base_path('../config_map.php'));
 
         foreach ($config_map['services'] as $service => $data) {
 
