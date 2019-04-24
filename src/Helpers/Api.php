@@ -42,8 +42,9 @@ class Api
                 $request_data = array_merge($request_data, $args[3]);
             }
 
-            if (!isset($request_data['headers']['X-SH-Token']) && !empty($request->header('x-sh-token'))) {
-                $request_data['headers']['X-SH-Token'] = $request->header('x-sh-token');
+            if (!isset($request_data['headers']['Authorization']) && !empty($request->header('authorization'))) {
+                $request_data['headers']['Accept'] = 'application/json';
+                $request_data['headers']['Authorization'] = $request->header('authorization');
             }
 
             $response = $http->request($method, $url, $request_data);

@@ -39,15 +39,17 @@ class AuthToken
     {
         $is_authorized = false;
 
-        if (!empty($request->header('x-sh-token'))) {
+        if (!empty($request->header('authorization'))) {
 
             $user = null;
+            
+            sd($request->header('authorization'));
 
             $config_map = include(base_path('../config_map.php'));
             $crypt = new Encrypter($config_map['master_key'], 'AES-256-CBC');
-            $token = $crypt->decrypt($request->header('x-sh-token'));
+            $user_id = $crypt->decrypt($request->header('authorization'));
             
-            sd($token);
+            sd($user_id);
 
             $this->auth->viaRequest('api', function ($request) use ($user) {
                 return new GenericUser($user);
