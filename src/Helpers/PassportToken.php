@@ -4,26 +4,6 @@ namespace Lewisqic\SHCommon\Helpers;
 
 use \DateTime;
 
-/**
- * Class PassportToken
- *
- * @property string $token_id
- * @property string $user_id
- * @property boolean $expecting
- * @property int $start_at_unix
- * @property string $start_at
- * @property boolean $incorrect
- * @property int $created_at_unix
- * @property string $created_at
- * @property boolean $expired
- * @property int $expires_at_unix
- * @property string $expires_at
- * @property boolean $error
- * @property array $errors
- * @property boolean $valid
- *
- * @package PeterPetrus\Auth
- */
 class PassportToken
 {
     private $token = null;
