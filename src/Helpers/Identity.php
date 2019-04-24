@@ -72,7 +72,6 @@ class Identity
     public static function createCacheForAllServices($user)
     {
         $config_map = include(base_path('../config_map.php'));
-
         foreach ($config_map['services'] as $service => $data) {
             $crypt = new Encrypter($data['key'], 'AES-256-CBC');
             $token = $crypt->encrypt(time());
@@ -82,7 +81,6 @@ class Identity
                 ]
             ]);
         }
-
     }
 
 }

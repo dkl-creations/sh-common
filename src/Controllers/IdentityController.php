@@ -17,12 +17,9 @@ class IdentityController extends Controller
      *
      * @return json
      */
-    public function createCache(Request $request, $id = null)
+    public function createCache(Request $request, $id)
     {
         $data = $request->all();
-        if (empty($id)) {
-            abort(403, 'Missing required user id');
-        }
         Identity::createUserCache($id, $data);
         return response()->json(['success' => true]);
     }
@@ -37,9 +34,6 @@ class IdentityController extends Controller
      */
     public function deleteCache(Request $request, $id)
     {
-        if (empty($id)) {
-            abort(403, 'Missing required user id');
-        }
         Identity::deleteUserCache($id);
         return response()->json(['success' => true]);
     }
