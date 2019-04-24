@@ -5,7 +5,6 @@ namespace Lewisqic\SHCommon\Helpers;
 use Illuminate\Encryption\Encrypter;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
-use Dotenv\Dotenv;
 
 class Api
 {
@@ -42,9 +41,22 @@ class Api
                 $request_data = array_merge($request_data, $args[3]);
             }
 
-            if (!isset($request_data['headers']['Authorization']) && !empty($request->header('authorization'))) {
-                $request_data['headers']['Accept'] = 'application/json';
-                $request_data['headers']['Authorization'] = $request->header('authorization');
+            if (!isset($request_data['headers']['Authorization'])) {
+
+                if (!empty($request->header('authorization'))) {
+                    $request_data['headers']['Authorization'] = $request->header('authorization');
+                    $request_data['headers']['Accept'] = $request->header('accept');
+                } else {
+                    $config_map = include(base_path('../config_map.php'));
+                    $crypt = new Encrypter($config_map['master_key'], 'AES-256-CBC');
+                    $token = $crypt->encrypt([
+                        'host'    => $_SERVER['HTTP_HOST'],
+                        'expires' => date('Y-m-d H:i:s', time() + (60 * 60)),
+                    ]);
+                    $request_data['headers']['Referer'] = $_SERVER['HTTP_HOST'] ?? '';
+                    $request_data['headers']['X-SH-Token'] = $token;
+                }
+
             }
 
             $response = $http->request($method, $url, $request_data);

@@ -40,15 +40,20 @@ class AuthToken
     {
         $is_authorized = false;
 
-        if (!empty($request->header('authorization'))) {
-            $config_map = include(base_path('../config_map.php'));
-            $crypt = new Encrypter($config_map['master_key'], 'AES-256-CBC');
+        $config_map = include(base_path('../config_map.php'));
+        $crypt = new Encrypter($config_map['master_key'], 'AES-256-CBC');
+        if (!empty($request->header('x-sh-token'))) {
+            $token = $crypt->decrypt($request->header('x-sh-token'));
+            if ($request->header('referer') == $token['host'] && strtotime($token['expires']) >= time()) {
+                $is_authorized = true;
+            }
+        } elseif (!empty($request->header('authorization'))) {
             $user_id = $crypt->decrypt(preg_replace('/^Token\s/', '', $request->header('authorization')));
             if (is_int($user_id)) {
                 $user = Identity::getUserCache($user_id);
-                if ($user) {
+                if ( $user ) {
                     $is_authorized = true;
-                    $this->app->singleton('user', function($app) use($user) {
+                    $this->app->singleton('user', function ($app) use ($user) {
                         return $user;
                     });
                 }
