@@ -2,6 +2,7 @@
 
 namespace Lewisqic\SHCommon\Helpers;
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Encryption\Encrypter;
 
 class Identity
