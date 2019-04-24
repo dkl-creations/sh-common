@@ -3,6 +3,7 @@
 namespace Lewisqic\SHCommon\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 
 class IdentityController extends Controller
@@ -10,15 +11,16 @@ class IdentityController extends Controller
 
     public function createCache(Request $request)
     {
+        $data = $request->all();
+        if (!isset($data['id'])) {
+            abort(403, 'Missing required user id');
+        }
 
-        \Log::debug($_POST);
+        $filename = md5($data['id']);
+        $contents = json_encode($data);
 
-        // delete old cached files
-        // create new cache file for the given user
-        // file username is an md5 hash of user ID
-
-        //Storage::delete('file.jpg');
-        //Storage::put('identity/test.txt', 'foobar');
+        Storage::delete('identity/' . $filename);
+        Storage::put('identity/' . $filename, $contents);
 
     }
 
