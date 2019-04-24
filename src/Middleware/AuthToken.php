@@ -40,6 +40,7 @@ class AuthToken
     {
         $is_authorized = false;
 
+        $user = null;
         $config_map = include(base_path('../config_map.php'));
         $crypt = new Encrypter($config_map['master_key'], 'AES-256-CBC');
         if (!empty($request->header('x-sh-token'))) {
@@ -53,12 +54,12 @@ class AuthToken
                 $user = Identity::getUserCache($user_id);
                 if ( $user ) {
                     $is_authorized = true;
-                    $this->app->singleton('user', function ($app) use ($user) {
-                        return $user;
-                    });
                 }
             }
         }
+        $this->app->singleton('user', function ($app) use ($user) {
+            return $user;
+        });
 
         if ($is_authorized == false) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
