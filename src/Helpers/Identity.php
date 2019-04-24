@@ -26,7 +26,7 @@ class Identity
      *
      * @param $user
      */
-    public static function createTokenCache($user)
+    public static function createTokensForUser($user)
     {
         $config_map = include(base_path('../config_map.php'));
 
@@ -36,7 +36,7 @@ class Identity
             $token = $crypt->encrypt(time());
             $response = Api::post($service, 'v1/identity/cache/create', $user, [
                 'headers' => [
-                    'X-SH-Cache-Token' => $token
+                    'X-SH-Identity-Token' => $token
                 ]
             ]);
 
