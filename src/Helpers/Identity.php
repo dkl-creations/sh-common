@@ -12,14 +12,32 @@ class Identity
     /**
      * Generate a hashed token based on user id
      *
-     * @param $user_id
+     * @param $id
      */
-    public static function getPublicToken($user_id)
+    public static function getPublicToken($id)
     {
         $config_map = include(base_path('../config_map.php'));
         $crypt = new Encrypter($config_map['master_key'], 'AES-256-CBC');
-        $token = $crypt->encrypt($user_id);
+        $token = $crypt->encrypt($id);
         return $token;
+    }
+
+    /**
+     * Get a users data from the cached filed
+     *
+     * @param $id
+     */
+    public static function getUserCache($id)
+    {
+        $filename = md5($id);
+        if (Storage::exists('identity/' . $filename)) {
+            $contents = Storage::get('identity/' . $filename);
+            $data = json_decode(Crypt::decrypt($contents), true);
+            if (is_array($data)) {
+                return $data;
+            }
+        }
+        return null;
     }
 
     /**

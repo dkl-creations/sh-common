@@ -3,29 +3,30 @@
 namespace Lewisqic\SHCommon\Middleware;
 
 use Closure;
-use Illuminate\Contracts\Auth\Factory as Auth;
+use Laravel\Lumen\Application as App;
 use Illuminate\Auth\GenericUser;
 use Illuminate\Encryption\Encrypter;
+use Lewisqic\SHCommon\Helpers\Identity;
 
 class AuthToken
 {
 
     /**
-     * The authentication guard factory instance.
+     * The lumen application
      *
-     * @var \Illuminate\Contracts\Auth\Factory
+     * @var \Laravel\Lumen\Application
      */
-    protected $auth;
+    protected $app;
 
     /**
      * Create a new middleware instance.
      *
-     * @param  \Illuminate\Contracts\Auth\Factory  $auth
+     * @param  \Laravel\Lumen\Application  $app
      * @return void
      */
-    public function __construct(Auth $auth)
+    public function __construct(App $app)
     {
-        $this->auth = $auth;
+        $this->app = $app;
     }
 
     /**
@@ -40,21 +41,18 @@ class AuthToken
         $is_authorized = false;
 
         if (!empty($request->header('authorization'))) {
-
-            $user = null;
-            
-            sd($request->header('authorization'));
-
             $config_map = include(base_path('../config_map.php'));
             $crypt = new Encrypter($config_map['master_key'], 'AES-256-CBC');
-            $user_id = $crypt->decrypt($request->header('authorization'));
-            
-            sd($user_id);
-
-            $this->auth->viaRequest('api', function ($request) use ($user) {
-                return new GenericUser($user);
-            });
-
+            $user_id = $crypt->decrypt(preg_replace('/^Token\s/', '', $request->header('authorization')));
+            if (is_int($user_id)) {
+                $user = Identity::getUserCache($user_id);
+                if ($user) {
+                    $is_authorized = true;
+                    $this->app->singleton('user', function($app) use($user) {
+                        return $user;
+                    });
+                }
+            }
         }
 
         if ($is_authorized == false) {
