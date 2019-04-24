@@ -19,10 +19,10 @@ class AuthCache
     {
         $is_authorized = false;
 
-        if (!empty($request->header('x-sh-token'))) {
+        if (!empty($request->header('x-sh-cache-token'))) {
             $crypt = new Encrypter(env('APP_KEY'), 'AES-256-CBC');
-            $timestamp = $crypt->decrypt($request->header('x-sh-token'));
-            if ( is_int($timestamp) && time() <= $timestamp + 600 ) {
+            $timestamp = $crypt->decrypt($request->header('x-sh-cache-token'));
+            if (is_int($timestamp) && time() <= $timestamp + 600) { // token valid for 10 minutes
                 $is_authorized = true;
             }
         }
