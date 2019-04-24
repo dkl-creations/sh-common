@@ -22,8 +22,6 @@ class SHCommonServiceProvider extends ServiceProvider
     public function boot()
     {
 
-        die('pulled from github!');
-
         // require custom functions file
         require_once(__DIR__ . '/Helpers/functions.php');
 
