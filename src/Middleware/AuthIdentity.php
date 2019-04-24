@@ -5,7 +5,7 @@ namespace Lewisqic\SHCommon\Middleware;
 use Closure;
 use Illuminate\Encryption\Encrypter;
 
-class AuthCache
+class AuthIdentity
 {
 
     /**
@@ -19,9 +19,9 @@ class AuthCache
     {
         $is_authorized = false;
 
-        if (!empty($request->header('x-sh-identity-token'))) {
+        if (!empty($request->header('x-sh-identity'))) {
             $crypt = new Encrypter(env('APP_KEY'), 'AES-256-CBC');
-            $timestamp = $crypt->decrypt($request->header('x-sh-identity-token'));
+            $timestamp = $crypt->decrypt($request->header('x-sh-identity'));
             if (is_int($timestamp) && time() <= $timestamp + 600) { // token valid for 10 minutes
                 $is_authorized = true;
             }
