@@ -23,3 +23,22 @@ function api_url($service, $path) {
         die('No config map file found');
     }
 }
+
+/**
+ * Return a standardized JSON response
+ *
+ * @param $data
+ */
+function json($data = [], $status_code = 200) {
+    $defaults = [
+        'success' => true,
+        'message' => null,
+        'data' => [],
+        'links' => [],
+        'meta' => [],
+    ];
+    $response = array_merge($defaults, $data);
+    header('MS-Name: Microservice Name');
+    header('MS-Version: 1.0');
+    return response()->json($response, $status_code);
+}

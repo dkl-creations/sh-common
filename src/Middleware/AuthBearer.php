@@ -36,7 +36,7 @@ class AuthBearer
     public function handle($request, Closure $next, $guard = null)
     {
         if ($this->auth->guard($guard)->guest()) {
-            return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+            return json(['success' => false, 'message' => 'Unauthorized'], 401);
         }
         return $next($request);
     }
