@@ -25,6 +25,21 @@ class IdentityController extends Controller
     }
 
     /**
+     * Update user data cache record
+     *
+     * @param Request $request
+     * @param         $id
+     *
+     * @return json
+     */
+    public function updateCache(Request $request, $id)
+    {
+        $data = $request->all();
+        Identity::updateUserCache($id, $data);
+        return json(['message' => 'Cache updated successfully']);
+    }
+
+    /**
      * Delete user data cache record
      *
      * @param Request $request

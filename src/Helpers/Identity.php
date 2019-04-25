@@ -44,6 +44,7 @@ class Identity
     /**
      * Create the cached identity record for a user
      *
+     * @param $id
      * @param $data
      */
     public static function createUserCache($id, $data)
@@ -64,6 +65,28 @@ class Identity
     }
 
     /**
+     * Update the cached identity record for a user
+     *
+     * @param $id
+     * @param $data
+     */
+    public static function updateUserCache($id, $data)
+    {
+        $client_token = $data['token'];
+        $user_data = $data['user'];
+        $filename = md5($id) . '-' . md5($client_token);
+        $token_data = [
+            'expires_at' => date('Y-m-d H:i:s', strtotime('+1 year')),
+            'user' => $user_data,
+            'org' => 'jrw',
+            'roles' => [],
+            'permissions' => [],
+        ];
+        $contents = Crypt::encrypt(json_encode($token_data));
+        Storage::put('identity/' . $filename, $contents);
+    }
+
+    /**
      * Delete the user cached data
      *
      * @param $data
@@ -79,20 +102,27 @@ class Identity
      *
      * @param $user
      */
-    public static function createCacheForAllServices($token, $user)
+    public static function createCacheOnAllServices($token, $user)
     {
-        $config_map = include(base_path('../config_map.php'));
-        foreach ($config_map['services'] as $service => $data) {
-            $cache_data = [
-                'token' => $token,
-                'user' => $user,
-            ];
-            $response = Api::post($service, 'v1/identity/cache/' . $user['id'], $cache_data, [
-                'headers' => [
-                    'X-SH-Identity' => self::getIdentityToken($data['key'])
-                ]
-            ]);
-        }
+        $data = [
+            'token' => $token,
+            'user' => $user,
+        ];
+        self::runOnAllServices('post', $user['id'], $data);
+    }
+
+    /**
+     * Update the token cache on each MS for a given user
+     *
+     * @param $user
+     */
+    public static function updateCacheOnAllServices($token, $user)
+    {
+        $data = [
+            'token' => $token,
+            'user' => $user,
+        ];
+        self::runOnAllServices('put', $user['id'], $data);
     }
 
     /**
@@ -102,9 +132,21 @@ class Identity
      */
     public static function deleteCacheFromAllServices($id)
     {
+        self::runOnAllServices('put', $id, []);
+    }
+
+    /**
+     * Run specified call on all services via API call
+     *
+     * @param $method
+     * @param $user_id
+     * @param $data
+     */
+    private static function runOnAllServices($method, $user_id, $data)
+    {
         $config_map = include(base_path('../config_map.php'));
         foreach ($config_map['services'] as $service => $data) {
-            $response = Api::delete($service, 'v1/identity/cache/' . $id, [], [
+            $response = Api::{$method}($service, 'v1/identity/cache/' . $user_id, $data, [
                 'headers' => [
                     'X-SH-Identity' => self::getIdentityToken($data['key'])
                 ]
