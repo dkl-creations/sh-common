@@ -142,13 +142,13 @@ class Identity
      * @param $user_id
      * @param $data
      */
-    private static function runOnAllServices($method, $user_id, $data)
+    private static function runOnAllServices($method, $user_id, $cache_data)
     {
         $config_map = include(base_path('../config_map.php'));
         foreach ($config_map['services'] as $service => $data) {
             $crypt = new Encrypter($data['key'], 'AES-256-CBC');
             $identity_token = $crypt->encrypt(strtotime('+5 minutes'));
-            $response = Api::{$method}($service, 'v1/identity/cache/' . $user_id, $data, [
+            $response = Api::{$method}($service, 'v1/identity/cache/' . $user_id, $cache_data, [
                 'headers' => [
                     'X-SH-Identity' => $identity_token
                 ]
