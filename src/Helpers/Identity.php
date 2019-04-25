@@ -146,26 +146,14 @@ class Identity
     {
         $config_map = include(base_path('../config_map.php'));
         foreach ($config_map['services'] as $service => $data) {
+            $crypt = new Encrypter($data['key'], 'AES-256-CBC');
+            $identity_token = $crypt->encrypt(strtotime('+5 minutes'));
             $response = Api::{$method}($service, 'v1/identity/cache/' . $user_id, $data, [
                 'headers' => [
-                    'X-SH-Identity' => self::getIdentityToken($data['key'])
+                    'X-SH-Identity' => $identity_token
                 ]
             ]);
         }
-    }
-
-    /**
-     * Generate our identity token used for authentication on identity cache calls
-     *
-     * @param $key
-     *
-     * @return string
-     */
-    private static function getIdentityToken($key)
-    {
-        $crypt = new Encrypter($key, 'AES-256-CBC');
-        $identity_token = $crypt->encrypt(strtotime('+5 minutes'));
-        return $identity_token;
     }
 
 }
