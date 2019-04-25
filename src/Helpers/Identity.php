@@ -70,6 +70,7 @@ class Identity
      */
     public static function deleteUserCache($id)
     {
+        \Log::error($id);
         $path = storage_path('app/identity/' . md5($id) . '-*');
         File::delete(File::glob($path));
     }
@@ -83,18 +84,47 @@ class Identity
     {
         $config_map = include(base_path('../config_map.php'));
         foreach ($config_map['services'] as $service => $data) {
-            $crypt = new Encrypter($data['key'], 'AES-256-CBC');
-            $identity_token = $crypt->encrypt(strtotime('+5 minutes'));
             $cache_data = [
                 'token' => $token,
                 'user' => $user,
             ];
             $response = Api::post($service, 'v1/identity/cache/' . $user['id'], $cache_data, [
                 'headers' => [
-                    'X-SH-Identity' => $identity_token
+                    'X-SH-Identity' => self::getIdentityToken($data['key'])
                 ]
             ]);
         }
+    }
+
+    /**
+     * Delete token cache files on each MS for a given user
+     *
+     * @param $user
+     */
+    public static function deleteCacheFromAllServices($id)
+    {
+        $config_map = include(base_path('../config_map.php'));
+        foreach ($config_map['services'] as $service => $data) {
+            $response = Api::delete($service, 'v1/identity/cache/' . $id, [], [
+                'headers' => [
+                    'X-SH-Identity' => self::getIdentityToken($data['key'])
+                ]
+            ]);
+        }
+    }
+
+    /**
+     * Generate our identity token used for authentication on identity cache calls
+     *
+     * @param $key
+     *
+     * @return string
+     */
+    private static function getIdentityToken($key)
+    {
+        $crypt = new Encrypter($key, 'AES-256-CBC');
+        $identity_token = $crypt->encrypt(strtotime('+5 minutes'));
+        return $identity_token;
     }
 
 }
