@@ -132,7 +132,7 @@ class Identity
      */
     public static function deleteCacheFromAllServices($id)
     {
-        self::runOnAllServices('put', $id, []);
+        self::runOnAllServices('delete', $id, []);
     }
 
     /**
