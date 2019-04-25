@@ -70,7 +70,6 @@ class Identity
      */
     public static function deleteUserCache($id)
     {
-        \Log::error($id);
         $path = storage_path('app/identity/' . md5($id) . '-*');
         File::delete(File::glob($path));
     }
