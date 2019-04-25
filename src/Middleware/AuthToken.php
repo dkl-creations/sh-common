@@ -49,10 +49,12 @@ class AuthToken
                 $is_authorized = true;
             }
         } elseif (!empty($request->header('authorization'))) {
-            $user_id = $crypt->decrypt(preg_replace('/^Token\s/', '', $request->header('authorization')));
+            $token = preg_replace('/^Token\s/', '', $request->header('authorization'));
+            $user_id = $crypt->decrypt($token);
             if (is_int($user_id)) {
-                $user = Identity::getUserCache($user_id);
-                if ( $user ) {
+                $cached_data = Identity::getUserCache($token, $user_id);
+                if ( $cached_data && strtotime($cached_data['expires_at']) > time() ) {
+                    $user = $cached_data['user'];
                     $is_authorized = true;
                 }
             }

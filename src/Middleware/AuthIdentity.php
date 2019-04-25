@@ -22,7 +22,7 @@ class AuthIdentity
         if (!empty($request->header('x-sh-identity'))) {
             $crypt = new Encrypter(env('APP_KEY'), 'AES-256-CBC');
             $timestamp = $crypt->decrypt($request->header('x-sh-identity'));
-            if (is_int($timestamp) && time() <= $timestamp + 600) { // token valid for 10 minutes
+            if (is_int($timestamp) && $timestamp >= time()) {
                 $is_authorized = true;
             }
         }

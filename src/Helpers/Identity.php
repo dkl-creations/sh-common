@@ -3,6 +3,7 @@
 namespace Lewisqic\SHCommon\Helpers;
 
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Crypt;
 
@@ -27,9 +28,9 @@ class Identity
      *
      * @param $id
      */
-    public static function getUserCache($id)
+    public static function getUserCache($client_token, $id)
     {
-        $filename = md5($id);
+        $filename = md5($id) . '-' . md5($client_token);
         if (Storage::exists('identity/' . $filename)) {
             $contents = Storage::get('identity/' . $filename);
             $data = json_decode(Crypt::decrypt($contents), true);
@@ -47,9 +48,18 @@ class Identity
      */
     public static function createUserCache($id, $data)
     {
-        $filename = md5($id);
-        $contents = Crypt::encrypt(json_encode($data));
-        Storage::delete('identity/' . $filename);
+        $client_token = $data['token'];
+        $user_data = $data['user'];
+        $filename = md5($id) . '-' . md5($client_token);
+        $token_data = [
+            'expires_at' => date('Y-m-d H:i:s', strtotime('+1 year')),
+            'user' => $user_data,
+            'org' => 'jrw',
+            'roles' => [],
+            'permissions' => [],
+        ];
+        $contents = Crypt::encrypt(json_encode($token_data));
+        self::deleteUserCache($id);
         Storage::put('identity/' . $filename, $contents);
     }
 
@@ -60,8 +70,8 @@ class Identity
      */
     public static function deleteUserCache($id)
     {
-        $filename = md5($id);
-        Storage::delete('identity/' . $filename);
+        $path = storage_path('app/identity/' . md5($id) . '-*');
+        File::delete(File::glob($path));
     }
 
     /**
@@ -69,15 +79,19 @@ class Identity
      *
      * @param $user
      */
-    public static function createCacheForAllServices($user)
+    public static function createCacheForAllServices($token, $user)
     {
         $config_map = include(base_path('../config_map.php'));
         foreach ($config_map['services'] as $service => $data) {
             $crypt = new Encrypter($data['key'], 'AES-256-CBC');
-            $token = $crypt->encrypt(time());
-            $response = Api::post($service, 'v1/identity/cache/' . $user['id'], $user, [
+            $identity_token = $crypt->encrypt(strtotime('+5 minutes'));
+            $cache_data = [
+                'token' => $token,
+                'user' => $user,
+            ];
+            $response = Api::post($service, 'v1/identity/cache/' . $user['id'], $cache_data, [
                 'headers' => [
-                    'X-SH-Identity' => $token
+                    'X-SH-Identity' => $identity_token
                 ]
             ]);
         }
