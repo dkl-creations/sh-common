@@ -7,6 +7,7 @@ use Laravel\Lumen\Application as App;
 use Illuminate\Auth\GenericUser;
 use Illuminate\Encryption\Encrypter;
 use Lewisqic\SHCommon\Helpers\Identity;
+use Lewisqic\SHCommon\Helpers\Config;
 
 class AuthToken
 {
@@ -57,6 +58,7 @@ class AuthToken
                 if ( $cached_data && strtotime($cached_data['expires_at']) >= time() ) {
                     $user = $cached_data['user'];
                     $org = $cached_data['org'];
+                    Config::loadDatabaseCredentials($org);
                     $is_authorized = true;
                 }
             }

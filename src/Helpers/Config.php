@@ -9,9 +9,8 @@ class Config
      * Load our config map values into our database config
      * @param $dir
      */
-    public static function loadDatabaseCredentials()
+    public static function loadDatabaseCredentials($org_data = null)
     {
-
         if (isset($_SERVER['HTTP_HOST'])) {
             if ( file_exists(base_path('../config_map.php')) ) {
                 $config_map = include(base_path('../config_map.php'));
@@ -22,7 +21,10 @@ class Config
                     $org = count($host_parts) == 3 ? $host_parts[count($host_parts) - 3] : $host_parts[0];
                 } else {
                     $service = $host_parts[count($host_parts) - 3];
-                    $org = 'jrw'; // TODO: determine site from our cached token data
+                    $org = '';
+                }
+                if (!empty($org_data)) {
+                    $org = $org_data['domain'];
                 }
 
                 $db_database = $config_map['services'][$service]['db_table'];
