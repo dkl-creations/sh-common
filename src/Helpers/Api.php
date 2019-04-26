@@ -50,8 +50,8 @@ class Api
                     $config_map = include(base_path('../config_map.php'));
                     $crypt = new Encrypter($config_map['master_key'], 'AES-256-CBC');
                     $token = $crypt->encrypt([
-                        'host'    => $_SERVER['HTTP_HOST'],
-                        'expires' => date('Y-m-d H:i:s', time() + (60 * 60)),
+                        'host'    => $_SERVER['HTTP_HOST'] ?? '',
+                        'expires_at' => date('Y-m-d H:i:s', strtotime('+5 minutes')),
                     ]);
                     $request_data['headers']['Referer'] = $_SERVER['HTTP_HOST'] ?? '';
                     $request_data['headers']['X-SH-Token'] = $token;

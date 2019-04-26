@@ -16,8 +16,8 @@ class RollbackCommand extends BaseRollbackCommand
     {
         if ($this->option('all')) {
             $this->runFor('all');
-        } elseif ($client = $this->option('client')) {
-            $this->runFor($client);
+        } elseif ($org = $this->option('org')) {
+            $this->runFor($org);
         } else {
             $this->runFor();
         }
@@ -30,8 +30,8 @@ class RollbackCommand extends BaseRollbackCommand
     {
         $options = parent::getOptions();
         array_push($options,
-            ['all', null, InputOption::VALUE_NONE, 'Rollback migrations for all clients.'],
-            ['client', null, InputOption::VALUE_OPTIONAL, 'Rollback migrations for a specific client.']
+            ['all', null, InputOption::VALUE_NONE, 'Rollback migrations for all organizations.'],
+            ['org', null, InputOption::VALUE_OPTIONAL, 'Rollback migrations for a specific organization.']
         );
         return $options;
     }

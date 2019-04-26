@@ -45,7 +45,7 @@ class AuthToken
         $crypt = new Encrypter($config_map['master_key'], 'AES-256-CBC');
         if (!empty($request->header('x-sh-token'))) {
             $token = $crypt->decrypt($request->header('x-sh-token'));
-            if ($request->header('referer') == $token['host'] && strtotime($token['expires']) >= time()) {
+            if ($request->header('referer') == $token['host'] && strtotime($token['expires_at']) >= time()) {
                 $is_authorized = true;
             }
         } elseif (!empty($request->header('authorization'))) {
@@ -53,7 +53,7 @@ class AuthToken
             $user_id = $crypt->decrypt($token);
             if (is_int($user_id)) {
                 $cached_data = Identity::getUserCache($token, $user_id);
-                if ( $cached_data && strtotime($cached_data['expires_at']) > time() ) {
+                if ( $cached_data && strtotime($cached_data['expires_at']) >= time() ) {
                     $user = $cached_data['user'];
                     $is_authorized = true;
                 }

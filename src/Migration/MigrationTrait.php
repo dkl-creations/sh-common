@@ -6,11 +6,11 @@ trait MigrationTrait
 {
 
     /**
-     * Load client credentials into our db config
+     * Load organization credentials into our db config
      *
      * @param $creds
      */
-    protected function loadClientCredentials($creds)
+    protected function loadOrgCredentials($creds)
     {
         config(['database.connections.mysql.database' => $creds['database']]);
         config(['database.connections.mysql.username' => $creds['username']]);
@@ -19,24 +19,26 @@ trait MigrationTrait
     }
 
     /**
-     * Run migrations in given clients.
+     * Run migrations in given organizations.
      *
-     * @param string $client
+     * @param string $org
      *
      * @return void
      */
-    protected function runFor($client = null)
+    protected function runFor($org = null)
     {
         if ( file_exists(base_path('../config_map.php')) ) {
-            $service = env('APP_SUBDOMAIN');
             $config_map = include(base_path('../config_map.php'));
+            $service = env('APP_SERVICE');
+            $db_database = $config_map['services'][$service]['db_table'];
 
-            if ($client == 'all') {
+            if ($org == 'all') {
 
-                $this->info("\nClients: ALL");
-                foreach ($config_map['sites'] as $c => $creds) {
-                    $this->loadClientCredentials([
-                        'database' => $creds['DB_USERNAME'] . '_' . $config_map['db_names'][$service],
+                $this->info("\nOrganizations: ALL");
+
+                foreach ($config_map['db_credentials']['organizations'] as $o => $creds) {
+                    $this->loadOrgCredentials([
+                        'database' => preg_replace('/\{username\}/', $creds['DB_USERNAME'], $db_database),
                         'username' => $creds['DB_USERNAME'],
                         'password' => $creds['DB_PASSWORD'],
                     ]);
@@ -44,23 +46,25 @@ trait MigrationTrait
                     parent::handle();
                 }
 
-            } elseif ($client != null) {
+            } elseif ($org != null) {
 
-                $creds = $config_map['sites'][strtolower($client)];
-                $this->loadClientCredentials([
-                    'database' => $creds['DB_USERNAME'] . '_' . $config_map['db_names'][$service],
+                $creds = $config_map['sites'][strtolower($org)];
+
+                $creds = $config_map['db_credentials']['organizations'][strtolower($org)];
+                $this->loadOrgCredentials([
+                    'database' => preg_replace('/\{username\}/', $creds['DB_USERNAME'], $db_database),
                     'username' => $creds['DB_USERNAME'],
                     'password' => $creds['DB_PASSWORD'],
                 ]);
-                $this->comment("\nClient: " . strtoupper($client));
+                $this->comment("\nOrganization: " . strtoupper($org));
                 parent::handle();
 
             } else {
 
-                if (isset($config_map['services'][$service])) {
-                    $creds = $config_map['services'][$service];
-                    $this->loadClientCredentials([
-                        'database' => $config_map['db_names'][$service],
+                if (isset($config_map['db_credentials']['services'][$service])) {
+                    $creds = $config_map['db_credentials']['services'][$service];
+                    $this->loadOrgCredentials([
+                        'database' => $db_database,
                         'username' => $creds['DB_USERNAME'],
                         'password' => $creds['DB_PASSWORD'],
                     ]);

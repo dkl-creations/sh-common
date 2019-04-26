@@ -12,8 +12,8 @@ class MigrateCommand extends BaseMigrateCommand
     public function __construct(Migrator $migrator)
     {
         $this->signature .= "
-                {--all : Run migrations for all available clients.}
-                {--client= : Run migrations for a specific client.}
+                {--all : Run migrations for all available organizations.}
+                {--org= : Run migrations for a specific organization.}
         ";
         parent::__construct($migrator);
     }
@@ -25,8 +25,8 @@ class MigrateCommand extends BaseMigrateCommand
     {
         if ($this->option('all')) {
             $this->runFor('all');
-        } elseif ($client = $this->option('client')) {
-            $this->runFor($client);
+        } elseif ($org = $this->option('org')) {
+            $this->runFor($org);
         } else {
             $this->runFor();
         }
