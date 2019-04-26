@@ -41,6 +41,7 @@ class AuthToken
         $is_authorized = false;
 
         $user = null;
+        $org = null;
         $config_map = include(base_path('../config_map.php'));
         $crypt = new Encrypter($config_map['master_key'], 'AES-256-CBC');
         if (!empty($request->header('x-sh-token'))) {
@@ -55,12 +56,16 @@ class AuthToken
                 $cached_data = Identity::getUserCache($token, $user_id);
                 if ( $cached_data && strtotime($cached_data['expires_at']) >= time() ) {
                     $user = $cached_data['user'];
+                    $org = $cached_data['org'];
                     $is_authorized = true;
                 }
             }
         }
         $this->app->singleton('user', function ($app) use ($user) {
             return $user;
+        });
+        $this->app->singleton('org', function ($app) use ($org) {
+            return $org;
         });
 
         if ($is_authorized == false) {
