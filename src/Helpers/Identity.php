@@ -51,13 +51,8 @@ class Identity
     {
         $client_token = $data['token'];
         $filename = md5($id) . '-' . md5($client_token);
-        $token_data = [
-            'expires_at' => date('Y-m-d H:i:s', strtotime('+1 year')),
-            'user' => $data['user'],
-            'org' => $data['org'],
-            'roles' => $data['roles'],
-            'permissions' => $data['permissions'],
-        ];
+        $token_data = $data['data'];
+        $token_data['expires_at'] = date('Y-m-d H:i:s', strtotime('+1 year'));
         $contents = Crypt::encrypt(json_encode($token_data));
         self::deleteUserCache($id);
         Storage::put('identity/' . $filename, $contents);
@@ -71,8 +66,10 @@ class Identity
      */
     public static function updateUserCache($id, $data)
     {
+        // TODO: only update parts of cache that we've passed in via $data
         $client_token = $data['token'];
         $user_data = $data['user'];
+        $old_cache = self::getUserCache($client_token, $id);
         $filename = md5($id) . '-' . md5($client_token);
         $token_data = [
             'expires_at' => date('Y-m-d H:i:s', strtotime('+1 year')),
@@ -81,6 +78,7 @@ class Identity
             'roles' => [],
             'permissions' => [],
         ];
+        $new_cache = array_merge($old_cache, []);
         $contents = Crypt::encrypt(json_encode($token_data));
         Storage::put('identity/' . $filename, $contents);
     }
@@ -103,7 +101,7 @@ class Identity
      */
     public static function createCacheOnAllServices($data)
     {
-        self::runOnAllServices('post', $data['user']['id'], $data);
+        self::runOnAllServices('post', $data['user_id'], $data);
     }
 
     /**
@@ -113,7 +111,7 @@ class Identity
      */
     public static function updateCacheOnAllServices($data)
     {
-        self::runOnAllServices('put', $data['user']['id'], $data);
+        self::runOnAllServices('put', $data['user_id'], $data);
     }
 
     /**
@@ -121,9 +119,9 @@ class Identity
      *
      * @param $user
      */
-    public static function deleteCacheFromAllServices($id)
+    public static function deleteCacheFromAllServices($user_id)
     {
-        self::runOnAllServices('delete', $id, []);
+        self::runOnAllServices('delete', $user_id, []);
     }
 
     /**
