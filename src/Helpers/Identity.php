@@ -71,7 +71,6 @@ class Identity
         $old_cache = self::getUserCache($client_token, $id);
         $new_cache = array_merge($old_cache, $new_data);
         $new_cache['expires_at'] = date('Y-m-d H:i:s', strtotime('+1 year'));
-        \Log::debug($new_cache);
         $filename = md5($id) . '-' . md5($client_token);
         $contents = Crypt::encrypt(json_encode($new_cache));
         Storage::put('identity/' . $filename, $contents);
