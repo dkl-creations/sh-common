@@ -50,14 +50,13 @@ class Identity
     public static function createUserCache($id, $data)
     {
         $client_token = $data['token'];
-        $user_data = $data['user'];
         $filename = md5($id) . '-' . md5($client_token);
         $token_data = [
             'expires_at' => date('Y-m-d H:i:s', strtotime('+1 year')),
-            'user' => $user_data,
-            'org' => 'jrw',
-            'roles' => [],
-            'permissions' => [],
+            'user' => $data['user'],
+            'org' => $data['org'],
+            'roles' => $data['roles'],
+            'permissions' => $data['permissions'],
         ];
         $contents = Crypt::encrypt(json_encode($token_data));
         self::deleteUserCache($id);
@@ -102,13 +101,9 @@ class Identity
      *
      * @param $user
      */
-    public static function createCacheOnAllServices($token, $user)
+    public static function createCacheOnAllServices($data)
     {
-        $data = [
-            'token' => $token,
-            'user' => $user,
-        ];
-        self::runOnAllServices('post', $user['id'], $data);
+        self::runOnAllServices('post', $data['user']['id'], $data);
     }
 
     /**
@@ -116,13 +111,9 @@ class Identity
      *
      * @param $user
      */
-    public static function updateCacheOnAllServices($token, $user)
+    public static function updateCacheOnAllServices($data)
     {
-        $data = [
-            'token' => $token,
-            'user' => $user,
-        ];
-        self::runOnAllServices('put', $user['id'], $data);
+        self::runOnAllServices('put', $data['user']['id'], $data);
     }
 
     /**
