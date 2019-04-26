@@ -66,20 +66,14 @@ class Identity
      */
     public static function updateUserCache($id, $data)
     {
-        // TODO: only update parts of cache that we've passed in via $data
+        $new_data = $data['data'];
         $client_token = $data['token'];
-        $user_data = $data['user'];
         $old_cache = self::getUserCache($client_token, $id);
+        $new_cache = array_merge($old_cache, $new_data);
+        $new_cache['expires_at'] = date('Y-m-d H:i:s', strtotime('+1 year'));
+        \Log::debug($new_cache);
         $filename = md5($id) . '-' . md5($client_token);
-        $token_data = [
-            'expires_at' => date('Y-m-d H:i:s', strtotime('+1 year')),
-            'user' => $user_data,
-            'org' => 'jrw',
-            'roles' => [],
-            'permissions' => [],
-        ];
-        $new_cache = array_merge($old_cache, []);
-        $contents = Crypt::encrypt(json_encode($token_data));
+        $contents = Crypt::encrypt(json_encode($new_cache));
         Storage::put('identity/' . $filename, $contents);
     }
 
