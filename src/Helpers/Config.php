@@ -23,7 +23,7 @@ class Config
                     $service = $host_parts[count($host_parts) - 3];
                     $org = '';
                 }
-                if (!empty($org_data)) {
+                if (!empty($org_data) && isset($org_data['domain'])) {
                     $org = $org_data['domain'];
                 }
 
