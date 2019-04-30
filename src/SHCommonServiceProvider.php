@@ -25,6 +25,9 @@ class SHCommonServiceProvider extends ServiceProvider
         // require custom functions file
         require_once(__DIR__ . '/Helpers/functions.php');
 
+        // load database connection if we can
+        Config::loadDatabaseCredentials();
+
         // bind our custom exception handler
         $this->app->singleton(ExceptionHandler::class, Handler::class);
 
