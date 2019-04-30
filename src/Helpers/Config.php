@@ -15,6 +15,7 @@ class Config
             if ( file_exists(base_path('../config_map.php')) ) {
                 $config_map = include(base_path('../config_map.php'));
 
+                $host_parts = explode('.', $_SERVER['HTTP_HOST']);
                 $service = isset($host_parts[count($host_parts) - 4]) ? $host_parts[count($host_parts) - 4] : '';
                 $org = $org_data != null ? $org_data['domain'] : '';
 
@@ -35,9 +36,7 @@ class Config
                         config(['database.connections.mysql.database' => $db_database]);
                         config(['database.connections.mysql.username' => $db_username]);
                         config(['database.connections.mysql.password' => $db_password]);
-                    } else {
-                        die('Unable to locate database credentials');
-                    }
+                    }Z
                 }
 
             } else {
