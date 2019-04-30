@@ -36,7 +36,7 @@ class Config
                         config(['database.connections.mysql.database' => $db_database]);
                         config(['database.connections.mysql.username' => $db_username]);
                         config(['database.connections.mysql.password' => $db_password]);
-                    }Z
+                    }
                 }
 
             } else {
