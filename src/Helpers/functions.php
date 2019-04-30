@@ -17,7 +17,8 @@ function api_url($service, $path) {
             $service = $host_parts[$host_count - 3];
         }
         $base = $host_parts[$host_count - 2] . '.' . $host_parts[$host_count - 1];
-        $url = (isset($_SERVER['REQUEST_SCHEME']) ? $_SERVER['REQUEST_SCHEME'] : 'http') . '://' . $config_map['server'] . '.' . $service . '.' . $base . (preg_match('/^\//', $path) ? '' : '/') . $path;
+        $url = (isset($_SERVER['REQUEST_SCHEME']) ? $_SERVER['REQUEST_SCHEME'] : 'http') . '://' . $service . '.' . $config_map['server'] . '.' . $base . (preg_match('/^\//', $path) ? '' : '/') . $path;
+        sd($url);
         return $url;
     } else {
         die('No config map file found');
