@@ -7,7 +7,7 @@ use Illuminate\Encryption\Encrypter;
 use Lewisqic\SHCommon\Helpers\Identity;
 use Lewisqic\SHCommon\Helpers\Config;
 
-class AuthToken
+class LoadDatabase
 {
 
     /**
