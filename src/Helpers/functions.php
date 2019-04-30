@@ -13,8 +13,8 @@ function api_url($service, $path) {
         $config_map = include(base_path('../config_map.php'));
         $host_parts = explode('.', $_SERVER['HTTP_HOST']);
         $host_count = count($host_parts);
-        if ( $service == null && isset($host_parts[$host_count - 3]) ) {
-            $service = $host_parts[$host_count - 3];
+        if ( $service == null && isset($host_parts[$host_count - 4]) ) {
+            $service = $host_parts[$host_count - 4];
         }
         $base = $host_parts[$host_count - 2] . '.' . $host_parts[$host_count - 1];
         $url = (isset($_SERVER['REQUEST_SCHEME']) ? $_SERVER['REQUEST_SCHEME'] : 'http') . '://' . $service . '.' . $config_map['server'] . '.' . $base . (preg_match('/^\//', $path) ? '' : '/') . $path;

@@ -4,7 +4,6 @@ namespace Lewisqic\SHCommon\Middleware;
 
 use Closure;
 use Laravel\Lumen\Application as App;
-use Illuminate\Auth\GenericUser;
 use Illuminate\Encryption\Encrypter;
 use Lewisqic\SHCommon\Helpers\Identity;
 use Lewisqic\SHCommon\Helpers\Config;
