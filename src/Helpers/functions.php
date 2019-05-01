@@ -31,7 +31,6 @@ function api_url($service, $path) {
  */
 function json($data = [], $status_code = 200) {
     $defaults = [
-        'success' => true,
         'message' => null,
         'data' => [],
         'links' => [],

@@ -19,8 +19,8 @@ class Config
                 $service = isset($host_parts[count($host_parts) - 4]) ? $host_parts[count($host_parts) - 4] : '';
                 $org = $org_data != null ? $org_data['domain'] : '';
 
-                if (isset($config_map['services'][$service]['db_table'])) {
-                    $db_database = $config_map['services'][$service]['db_table'];
+                if (isset($config_map['services'][$service]['db_name'])) {
+                    $db_database = $config_map['services'][$service]['db_name'];
                     if ( isset($config_map['db_credentials']['services'][$service]) ) {
                         $config = $config_map['db_credentials']['services'][$service];
                         $db_username = $config['DB_USERNAME'];

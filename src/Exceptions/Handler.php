@@ -60,7 +60,6 @@ class Handler extends ExceptionHandler
         }
 
         return new JsonResponse([
-            'success' => false,
             'message' => $message,
             'file' => method_exists($exception, 'getFile') ? $exception->getFile() : 'Unknown File',
             'line' => method_exists($exception, 'getLine') ? $exception->getLine() : 'Unknown Line',

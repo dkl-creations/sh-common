@@ -30,7 +30,7 @@ trait MigrationTrait
         if ( file_exists(base_path('../config_map.php')) ) {
             $config_map = include(base_path('../config_map.php'));
             $service = env('APP_SERVICE');
-            $db_database = $config_map['services'][$service]['db_table'];
+            $db_database = $config_map['services'][$service]['db_name'];
 
             if ($org == 'all') {
 
