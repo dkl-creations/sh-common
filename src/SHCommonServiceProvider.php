@@ -4,6 +4,7 @@ namespace Lewisqic\SHCommon;
 
 use Lewisqic\SHCommon\Migration\MigrateCommand;
 use Lewisqic\SHCommon\Migration\RollbackCommand;
+use Lewisqic\SHCommon\Commands\DbSetCommand;
 use Lewisqic\SHCommon\Exceptions\Handler;
 use Lewisqic\SHCommon\Helpers\Config;
 use Illuminate\Contracts\Debug\ExceptionHandler;
@@ -31,7 +32,7 @@ class SHCommonServiceProvider extends ServiceProvider
         // bind our custom exception handler
         $this->app->singleton(ExceptionHandler::class, Handler::class);
 
-        // update migration command with our own additions
+        /*// update migration command with our own additions
         $this->app->singleton('command.migrate', function ($app) {
             return new MigrateCommand($app['migrator']);
         });
@@ -39,7 +40,7 @@ class SHCommonServiceProvider extends ServiceProvider
         // update rollback command with our own additions
         $this->app->singleton('command.migrate.rollback', function ($app) {
             return new RollbackCommand($app['migrator']);
-        });
+        });*/
 
         // import any custom routes
         $this->loadRoutesFrom(__DIR__ . '/routes.php');
@@ -53,6 +54,8 @@ class SHCommonServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
+        $this->commands([
+            DbSetCommand::class
+        ]);
     }
 }
