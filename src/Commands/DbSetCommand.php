@@ -116,7 +116,7 @@ class DbSetCommand extends Command
                 }
             }
         }
-        $this->question('Running command: "' . strtoupper($cmd . ' ' . $options_string) . '" for user: "' . strtoupper($this->db_username) . '" on the database: "' . strtoupper($this->db_database) . '"');
+        $this->question('Running command: "' . strtoupper($cmd . (!empty($options_string) ? ' ' . $options_string : '')) . '" for user: "' . strtoupper($this->db_username) . '" on the database: "' . strtoupper($this->db_database) . '"');
         $this->call($cmd, $options);
     }
 
