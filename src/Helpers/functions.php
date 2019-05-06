@@ -6,6 +6,15 @@ if ( file_exists(__DIR__ . '/../../../../../lab/kint_init.php') ) {
 }
 
 /**
+ * Return an array from our config map file
+ */
+function get_config_map() {
+    $path = env('config_map_path');
+    $config_map = include(base_path($path));
+    return $config_map;
+}
+
+/**
  * Generate an absoulte URL to a microservice URL
  */
 function api_url($service, $path = '') {
