@@ -17,6 +17,19 @@ function get_config_map() {
     return $config_map;
 }
 
+function get_db_creds($service, $org = '') {
+    $config_map = get_config_map();
+    if ( isset($config_map['db_credentials'][$service]) ) {
+        $service_creds = $config_map['db_credentials'][$service];
+        if ( isset($service_creds['DB_DATABASE']) ) {
+            $creds = $service_creds;
+        } elseif ( isset($service_creds[$org]) ) {
+            $creds = $service_creds[$org];
+        }
+    }
+    return isset($creds) ? $creds : null;
+}
+
 /**
  * Generate an absoulte URL to a microservice URL
  */

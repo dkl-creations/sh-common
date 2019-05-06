@@ -18,25 +18,13 @@ class Config
             $service = isset($host_parts[count($host_parts) - 4]) ? $host_parts[count($host_parts) - 4] : '';
             $org = $org_data != null ? $org_data['domain'] : '';
 
-            if (isset($config_map['services'][$service]['db_name'])) {
-                $db_database = $config_map['services'][$service]['db_name'];
-                if ( isset($config_map['db_credentials']['services'][$service]) ) {
-                    $config = $config_map['db_credentials']['services'][$service];
-                    $db_username = $config['DB_USERNAME'];
-                    $db_password = $config['DB_PASSWORD'];
-                } else if ( isset($config_map['db_credentials']['organizations'][$org]) ) {
-                    $config = $config_map['db_credentials']['organizations'][$org];
-                    $db_username = $config['DB_USERNAME'];
-                    $db_password = $config['DB_PASSWORD'];
-                    $db_database = preg_replace('/\{username\}/', $db_username, $db_database);
-                }
-
-                if ( isset($db_username) ) {
-                    config(['database.connections.mysql.database' => $db_database]);
-                    config(['database.connections.mysql.username' => $db_username]);
-                    config(['database.connections.mysql.password' => $db_password]);
-                }
+            $creds = get_db_creds($service, $org);
+            if ( !empty($creds) ) {
+                config(['database.connections.mysql.database' => $creds['DB_DATABASE']]);
+                config(['database.connections.mysql.username' => $creds['DB_USERNAME']]);
+                config(['database.connections.mysql.password' => $creds['DB_PASSWORD']]);
             }
+
         }
     }
 

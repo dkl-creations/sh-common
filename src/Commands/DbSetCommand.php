@@ -53,8 +53,6 @@ class DbSetCommand extends Command
     {
         $config_map = get_config_map();
         $this_service = env('APP_SERVICE');
-        $db_name = $config_map['services'][$this_service]['db_name'];
-        $all_orgs = $config_map['db_credentials']['organizations'];
 
         $cmd = $this->option('cmd');
         if (empty($cmd)) {
@@ -76,28 +74,31 @@ class DbSetCommand extends Command
 
         $options = $this->ask('Do you want to pass in any options?');
 
-        if (isset($config_map['db_credentials']['services'][$this_service])) {
-            $creds = $config_map['db_credentials']['services'][$this_service];
+        if (isset($config_map['db_credentials'][$this_service]['DB_DATABASE'])) {
 
-            $this->loadOrgCredentials($db_name, $creds);
+            $creds = $config_map['db_credentials'][$this_service];
+            $this->loadOrgCredentials($creds);
             $this->runCommand($cmd, $options);
 
         } else {
             $orgs = [
                 'all'
             ];
-            foreach ($all_orgs as $org_name => $creds) {
+            foreach ($config_map['orgs'] as $org_name) {
                 $orgs[] = $org_name;
             }
             $org = $this->choice('Which organization?', $orgs);
             if ($org == 'all') {
-                foreach ($all_orgs as $org_name => $creds) {
-                    $this->loadOrgCredentials($db_name, $creds);
-                    $this->runCommand($cmd, $options);
+                foreach ($config_map['orgs'] as $org_name) {
+                    if (isset($config_map['db_credentials'][$this_service][$org_name])) {
+                        $creds = $config_map['db_credentials'][$this_service][$org_name];
+                        $this->loadOrgCredentials($creds);
+                        $this->runCommand($cmd, $options);
+                    }
                 }
             } else {
-                $creds = $config_map['db_credentials']['organizations'][$org];
-                $this->loadOrgCredentials($db_name, $creds);
+                $creds = $config_map['db_credentials'][$this_service][$org];
+                $this->loadOrgCredentials($creds);
                 $this->runCommand($cmd, $options);
             }
         }
@@ -128,12 +129,11 @@ class DbSetCommand extends Command
      *
      * @param $creds
      */
-    protected function loadOrgCredentials($db_name, $creds)
+    protected function loadOrgCredentials($creds)
     {
-        $database = preg_replace('/\{username\}/', $creds['DB_USERNAME'], $db_name);
+        $this->db_database = $creds['DB_DATABASE'];
         $this->db_username = $creds['DB_USERNAME'];
-        $this->db_database = $database;
-        config(['database.connections.mysql.database' => $database]);
+        config(['database.connections.mysql.database' => $creds['DB_DATABASE']]);
         config(['database.connections.mysql.username' => $creds['DB_USERNAME']]);
         config(['database.connections.mysql.password' => $creds['DB_PASSWORD']]);
         $this->getLaravel()['db']->purge();

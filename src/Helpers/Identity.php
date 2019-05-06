@@ -127,8 +127,8 @@ class Identity
     private static function runOnAllServices($method, $user_id, $cache_data)
     {
         $config_map = get_config_map();
-        foreach ($config_map['services'] as $service => $data) {
-            $crypt = new Encrypter($data['key'], 'AES-256-CBC');
+        foreach ($config_map['keys'] as $service => $key) {
+            $crypt = new Encrypter($key, 'AES-256-CBC');
             $identity_token = $crypt->encrypt(strtotime('+5 minutes'));
             $response = Api::{$method}($service, 'v1/identity/cache/' . $user_id, $cache_data, [
                 'headers' => [

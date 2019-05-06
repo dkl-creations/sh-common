@@ -32,16 +32,6 @@ class SHCommonServiceProvider extends ServiceProvider
         // bind our custom exception handler
         $this->app->singleton(ExceptionHandler::class, Handler::class);
 
-        /*// update migration command with our own additions
-        $this->app->singleton('command.migrate', function ($app) {
-            return new MigrateCommand($app['migrator']);
-        });
-
-        // update rollback command with our own additions
-        $this->app->singleton('command.migrate.rollback', function ($app) {
-            return new RollbackCommand($app['migrator']);
-        });*/
-
         // import any custom routes
         $this->loadRoutesFrom(__DIR__ . '/routes.php');
 
