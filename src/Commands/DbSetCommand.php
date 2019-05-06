@@ -80,16 +80,12 @@ class DbSetCommand extends Command
             $this->loadOrgCredentials($creds);
             $this->runCommand($cmd, $options);
 
-        } else {
-            $orgs = [
-                'all'
-            ];
-            foreach ($config_map['orgs'] as $org_name) {
-                $orgs[] = $org_name;
-            }
+        } elseif (isset($config_map['db_credentials'][$this_service]) && is_array($config_map['db_credentials'][$this_service])) {
+            $orgs = array_keys($config_map['db_credentials'][$this_service]);
+            array_unshift($orgs, 'all');
             $org = $this->choice('Which organization?', $orgs);
             if ($org == 'all') {
-                foreach ($config_map['orgs'] as $org_name) {
+                foreach ($orgs as $org_name) {
                     if (isset($config_map['db_credentials'][$this_service][$org_name])) {
                         $creds = $config_map['db_credentials'][$this_service][$org_name];
                         $this->loadOrgCredentials($creds);
