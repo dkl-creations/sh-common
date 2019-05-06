@@ -9,7 +9,7 @@ if ( file_exists(__DIR__ . '/../../../../../lab/kint_init.php') ) {
  * Return an array from our config map file
  */
 function get_config_map() {
-    $path = env('config_map_path');
+    $path = env('CONFIG_MAP');
     $config_map = include(base_path($path));
     return $config_map;
 }
