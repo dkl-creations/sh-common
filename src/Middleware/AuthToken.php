@@ -42,7 +42,7 @@ class AuthToken
 
         $user = null;
         $org = null;
-        $config_map = include(base_path('../config_map.php'));
+        $config_map = get_config_map();
         $crypt = new Encrypter($config_map['master_key'], 'AES-256-CBC');
         if (!empty($request->header('x-sh-token'))) {
             $token = $crypt->decrypt($request->header('x-sh-token'));

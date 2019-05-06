@@ -47,7 +47,7 @@ class Api
                     $request_data['headers']['Authorization'] = $request->header('authorization');
                     $request_data['headers']['Accept'] = $request->header('accept');
                 } else {
-                    $config_map = include(base_path('../config_map.php'));
+                    $config_map = get_config_map();
                     $crypt = new Encrypter($config_map['master_key'], 'AES-256-CBC');
                     $token = $crypt->encrypt([
                         'host'    => $_SERVER['HTTP_HOST'] ?? '',

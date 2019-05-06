@@ -51,7 +51,7 @@ class DbSetCommand extends Command
      */
     public function handle()
     {
-        $config_map = include(base_path('../config_map.php'));
+        $config_map = get_config_map();
         $this_service = env('APP_SERVICE');
         $db_name = $config_map['services'][$this_service]['db_name'];
         $all_orgs = $config_map['db_credentials']['organizations'];

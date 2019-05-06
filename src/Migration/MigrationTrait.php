@@ -27,57 +27,51 @@ trait MigrationTrait
      */
     protected function runFor($org = null)
     {
-        if ( file_exists(base_path('../config_map.php')) ) {
-            $config_map = include(base_path('../config_map.php'));
-            $service = env('APP_SERVICE');
-            $db_database = $config_map['services'][$service]['db_name'];
+        $config_map = get_config_map();
+        $service = env('APP_SERVICE');
+        $db_database = $config_map['services'][$service]['db_name'];
 
-            if ($org == 'all') {
+        if ($org == 'all') {
 
-                $this->info("\nOrganizations: ALL");
+            $this->info("\nOrganizations: ALL");
 
-                foreach ($config_map['db_credentials']['organizations'] as $o => $creds) {
-                    $this->loadOrgCredentials([
-                        'database' => preg_replace('/\{username\}/', $creds['DB_USERNAME'], $db_database),
-                        'username' => $creds['DB_USERNAME'],
-                        'password' => $creds['DB_PASSWORD'],
-                    ]);
-                    $this->comment("\nDB User: " . $creds['DB_USERNAME']);
-                    parent::handle();
-                }
-
-            } elseif ($org != null) {
-
-                $creds = $config_map['sites'][strtolower($org)];
-
-                $creds = $config_map['db_credentials']['organizations'][strtolower($org)];
+            foreach ($config_map['db_credentials']['organizations'] as $o => $creds) {
                 $this->loadOrgCredentials([
                     'database' => preg_replace('/\{username\}/', $creds['DB_USERNAME'], $db_database),
                     'username' => $creds['DB_USERNAME'],
                     'password' => $creds['DB_PASSWORD'],
                 ]);
-                $this->comment("\nOrganization: " . strtoupper($org));
+                $this->comment("\nDB User: " . $creds['DB_USERNAME']);
                 parent::handle();
-
-            } else {
-
-                if (isset($config_map['db_credentials']['services'][$service])) {
-                    $creds = $config_map['db_credentials']['services'][$service];
-                    $this->loadOrgCredentials([
-                        'database' => $db_database,
-                        'username' => $creds['DB_USERNAME'],
-                        'password' => $creds['DB_PASSWORD'],
-                    ]);
-                    parent::handle();
-                } else {
-                    $this->error("Unable to locate db credentials for service: {$service}");
-                }
-
             }
 
+        } elseif ($org != null) {
+
+            $creds = $config_map['sites'][strtolower($org)];
+
+            $creds = $config_map['db_credentials']['organizations'][strtolower($org)];
+            $this->loadOrgCredentials([
+                'database' => preg_replace('/\{username\}/', $creds['DB_USERNAME'], $db_database),
+                'username' => $creds['DB_USERNAME'],
+                'password' => $creds['DB_PASSWORD'],
+            ]);
+            $this->comment("\nOrganization: " . strtoupper($org));
+            parent::handle();
 
         } else {
-            $this->error('No config map file found');
+
+            if (isset($config_map['db_credentials']['services'][$service])) {
+                $creds = $config_map['db_credentials']['services'][$service];
+                $this->loadOrgCredentials([
+                    'database' => $db_database,
+                    'username' => $creds['DB_USERNAME'],
+                    'password' => $creds['DB_PASSWORD'],
+                ]);
+                parent::handle();
+            } else {
+                $this->error("Unable to locate db credentials for service: {$service}");
+            }
+
         }
     }
 

@@ -17,7 +17,7 @@ class Identity
      */
     public static function getPublicToken($id)
     {
-        $config_map = include(base_path('../config_map.php'));
+        $config_map = get_config_map();
         $crypt = new Encrypter($config_map['master_key'], 'AES-256-CBC');
         $token = $crypt->encrypt($id);
         return $token;
@@ -126,7 +126,7 @@ class Identity
      */
     private static function runOnAllServices($method, $user_id, $cache_data)
     {
-        $config_map = include(base_path('../config_map.php'));
+        $config_map = get_config_map();
         foreach ($config_map['services'] as $service => $data) {
             $crypt = new Encrypter($data['key'], 'AES-256-CBC');
             $identity_token = $crypt->encrypt(strtotime('+5 minutes'));

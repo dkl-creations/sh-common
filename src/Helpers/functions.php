@@ -10,6 +10,9 @@ if ( file_exists(__DIR__ . '/../../../../../lab/kint_init.php') ) {
  */
 function get_config_map() {
     $path = env('CONFIG_MAP');
+    if (!file_exists(base_path($path))) {
+        die('No config map file found');
+    }
     $config_map = include(base_path($path));
     return $config_map;
 }
@@ -18,19 +21,15 @@ function get_config_map() {
  * Generate an absoulte URL to a microservice URL
  */
 function api_url($service, $path = '') {
-    if ( file_exists(base_path('../config_map.php')) ) {
-        $config_map = include(base_path('../config_map.php'));
-        $host_parts = explode('.', $_SERVER['HTTP_HOST']);
-        $host_count = count($host_parts);
-        if ( $service == null && isset($host_parts[$host_count - 4]) ) {
-            $service = $host_parts[$host_count - 4];
-        }
-        $base = $host_parts[$host_count - 2] . '.' . $host_parts[$host_count - 1];
-        $url = (isset($_SERVER['REQUEST_SCHEME']) ? $_SERVER['REQUEST_SCHEME'] : 'http') . '://' . $service . '.' . $config_map['server'] . '.' . $base . (preg_match('/^\//', $path) ? '' : '/') . $path;
-        return $url;
-    } else {
-        die('No config map file found');
+    $config_map = get_config_map();
+    $host_parts = explode('.', $_SERVER['HTTP_HOST']);
+    $host_count = count($host_parts);
+    if ( $service == null && isset($host_parts[$host_count - 4]) ) {
+        $service = $host_parts[$host_count - 4];
     }
+    $base = $host_parts[$host_count - 2] . '.' . $host_parts[$host_count - 1];
+    $url = (isset($_SERVER['REQUEST_SCHEME']) ? $_SERVER['REQUEST_SCHEME'] : 'http') . '://' . $service . '.' . $config_map['server'] . '.' . $base . (preg_match('/^\//', $path) ? '' : '/') . $path;
+    return $url;
 }
 
 /**
