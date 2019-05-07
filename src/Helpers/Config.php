@@ -2,6 +2,8 @@
 
 namespace Lewisqic\SHCommon\Helpers;
 
+use Illuminate\Support\Facades\DB;
+
 class Config
 {
 
@@ -23,6 +25,7 @@ class Config
                 config(['database.connections.mysql.database' => $creds['DB_DATABASE']]);
                 config(['database.connections.mysql.username' => $creds['DB_USERNAME']]);
                 config(['database.connections.mysql.password' => $creds['DB_PASSWORD']]);
+                DB::purge('mysql');
             }
 
         }
