@@ -17,7 +17,7 @@ class Api
      * @return mixed
      */
     public static function __callStatic($method, $args) {
-        
+
         $request = app('request');
         $method = strtoupper($method);
         if (empty($args[0] || empty($args[1]))) {
@@ -61,8 +61,8 @@ class Api
 
             $response = $http->request($method, $url, $request_data);
             $data = json_decode((string)$response->getBody(), true);
-            if (isset($data['success']) && $data['success'] == false) {
-                abort(!empty($data['code']) ? $data['code'] : 403, $data['message']);
+            if (!empty($data['code']) && preg_match('/^4/', $data['code'])) {
+                abort($data['code'], $data['message']);
             }
         } catch (BadResponseException $e) {
             abort($e->getStatusCode(), $e->getMessage());
