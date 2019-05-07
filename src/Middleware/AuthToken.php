@@ -47,6 +47,7 @@ class AuthToken
         if (!empty($request->header('x-sh-token'))) {
             $token = $crypt->decrypt($request->header('x-sh-token'));
             if ($request->header('referer') == $token['host'] && strtotime($token['expires_at']) >= time()) {
+                Config::loadDatabaseCredentials();
                 $is_authorized = true;
             }
         } elseif (!empty($request->header('authorization'))) {
