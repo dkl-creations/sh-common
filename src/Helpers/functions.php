@@ -8,17 +8,30 @@ if ( file_exists(__DIR__ . '/../../../../../lab/kint_init.php') ) {
 /**
  * Return an array from our config map file
  */
-function get_config_map() {
-    $path = env('CONFIG_MAP');
-    if (!file_exists(base_path($path))) {
-        die('No config map file found');
+function get_config_map($org = null) {
+    $global_file = env('CONFIG_MAP');
+    if (!file_exists(base_path($global_file))) {
+        die('No global config map found');
     }
-    $config_map = include(base_path($path));
+    $config_map = include(base_path($global_file));
+    if ($org != null) {
+        $path = pathinfo(base_path($global_file));
+        $org_file = $path['dirname'] . '/' . $org . '.php';
+        if (!file_exists($org_file)) {
+            die('No org config map found');
+        }
+        $org_config = include($org_file);
+        $db_credentials = array_merge($config_map['db_credentials'], $org_config['db_credentials']);
+        $config_map['db_credentials'] = $db_credentials;
+    }
     return $config_map;
 }
 
+/**
+ * Get our db credentials from our config map
+ */
 function get_db_creds($service, $org = '') {
-    $config_map = get_config_map();
+    $config_map = get_config_map($org);
     if ( isset($config_map['db_credentials'][$service]) ) {
         $service_creds = $config_map['db_credentials'][$service];
         if ( isset($service_creds['DB_DATABASE']) ) {
@@ -28,6 +41,22 @@ function get_db_creds($service, $org = '') {
         }
     }
     return isset($creds) ? $creds : null;
+}
+
+/**
+ * Get list of orgs from our config files
+ */
+function get_orgs_list() {
+    $orgs = [];
+    $global_file = env('CONFIG_MAP');
+    $path = pathinfo(base_path($global_file));
+    foreach (glob($path['dirname'] . '/*.php') as $filename) {
+        $file = basename($filename);
+        if ($file != 'global.php') {
+            $orgs[] = preg_replace('/\.php/', '', $file);
+        }
+    }
+    return $orgs;
 }
 
 /**

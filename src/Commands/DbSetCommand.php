@@ -74,26 +74,36 @@ class DbSetCommand extends Command
 
         $options = $this->ask('Do you want to pass in any options?');
 
-        if (isset($config_map['db_credentials'][$this_service]['DB_DATABASE'])) {
+        if (isset($config_map['db_credentials'][$this_service])) {
 
             $creds = $config_map['db_credentials'][$this_service];
             $this->loadOrgCredentials($creds);
             $this->runCommand($cmd, $options);
 
-        } elseif (isset($config_map['db_credentials'][$this_service]) && is_array($config_map['db_credentials'][$this_service])) {
-            $orgs = array_keys($config_map['db_credentials'][$this_service]);
+        } else {
+            $orgs = get_orgs_list();
             array_unshift($orgs, 'all');
             $org = $this->choice('Which organization?', $orgs);
             if ($org == 'all') {
                 foreach ($orgs as $org_name) {
-                    if (isset($config_map['db_credentials'][$this_service][$org_name])) {
-                        $creds = $config_map['db_credentials'][$this_service][$org_name];
+                    if ($org_name != 'all') {
+                        $config_map = get_config_map($org_name);
+                        if ( !isset($config_map['db_credentials'][$this_service]) ) {
+                            $this->error('missing database credentials for org/service');
+                            die();
+                        }
+                        $creds = $config_map['db_credentials'][$this_service];
                         $this->loadOrgCredentials($creds);
                         $this->runCommand($cmd, $options);
                     }
                 }
             } else {
-                $creds = $config_map['db_credentials'][$this_service][$org];
+                $config_map = get_config_map($org);
+                if (!isset($config_map['db_credentials'][$this_service])) {
+                    $this->error('missing database credentials for org/service');
+                    die();
+                }
+                $creds = $config_map['db_credentials'][$this_service];
                 $this->loadOrgCredentials($creds);
                 $this->runCommand($cmd, $options);
             }
