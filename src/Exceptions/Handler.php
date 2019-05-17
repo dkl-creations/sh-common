@@ -55,6 +55,9 @@ class Handler extends ExceptionHandler
         if (empty($message) && $code == 404) {
             $message = 'Page Not Found';
         }
+        if ($exception instanceof ModelNotFoundException) {
+            $code = 404;
+        }
         return \Output::code($code)->message($message)->json();
     }
 }
