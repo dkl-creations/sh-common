@@ -35,6 +35,14 @@ class SHCommonServiceProvider extends ServiceProvider
         // import any custom routes
         $this->loadRoutesFrom(__DIR__ . '/routes.php');
 
+        // register our custom aliases
+        if (!class_exists('Api')) {
+            class_alias('Lewisqic\SHCommon\Helpers\Api', 'Api');
+        }
+        if (!class_exists('Output')) {
+            class_alias('Lewisqic\SHCommon\Helpers\Output', 'Output');
+        }
+
     }
 
     /**
