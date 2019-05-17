@@ -47,9 +47,6 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
         $parentRender = parent::render($request, $exception);
-
-        // if parent returns a JsonResponse
-        // for example in case of a ValidationException
         if ($parentRender instanceof JsonResponse) {
             return $parentRender;
         }
@@ -58,12 +55,6 @@ class Handler extends ExceptionHandler
         if (empty($message) && $code == 404) {
             $message = 'Page Not Found';
         }
-
-        return new JsonResponse([
-            'message' => $message,
-            'file' => method_exists($exception, 'getFile') ? $exception->getFile() : 'Unknown File',
-            'line' => method_exists($exception, 'getLine') ? $exception->getLine() : 'Unknown Line',
-            'code' => $code,
-        ], $parentRender->status());
+        return \Output::code($code)->message($message)->json();
     }
 }

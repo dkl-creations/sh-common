@@ -75,19 +75,8 @@ function api_url($service, $path = '') {
 }
 
 /**
- * Return a standardized JSON response
- *
- * @param $data
+ * Abort with custom message and status code
  */
-function json($data = [], $status_code = 200) {
-    $defaults = [
-        'message' => null,
-        'data' => [],
-        'links' => [],
-        'meta' => [],
-    ];
-    $response = array_merge($defaults, $data);
-    header('MS-Name: Microservice Name');
-    header('MS-Version: 1.0');
-    return response()->json($response, $status_code);
+function fail($message, $status_code = 403) {
+    abort($status_code, $message);
 }
