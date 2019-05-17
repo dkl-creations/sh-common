@@ -55,6 +55,9 @@ class Handler extends ExceptionHandler
         if (empty($message) && $code == 404) {
             $message = 'Page Not Found';
         }
+        if (env('APP_DEBUG') == false && $exception instanceof \Illuminate\Database\QueryException) {
+            $message = 'Database Query Exception';
+        }
         if ($exception instanceof ModelNotFoundException) {
             $code = 404;
         }
