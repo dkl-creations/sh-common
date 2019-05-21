@@ -85,6 +85,7 @@ function fail($message, $status_code = 403) {
  * Get our current auth token value
  */
 function get_current_token() {
-    $token = preg_replace('/^Token\s/', '', \Request::header('authorization'));
+    $request = \Illuminate\Http\Request::capture();
+    $token = preg_replace('/^Token\s/', '', $request->header('authorization'));
     return $token;
 }

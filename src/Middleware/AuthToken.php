@@ -51,7 +51,7 @@ class AuthToken
                 $is_authorized = true;
             }
         } elseif (!empty($request->header('authorization'))) {
-            $token = get_current_token();``
+            $token = get_current_token();
             $user_id = $crypt->decrypt($token);
             if (is_int($user_id)) {
                 $cached_data = Identity::getUserCache($token, $user_id);
