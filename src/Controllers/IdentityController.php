@@ -21,7 +21,7 @@ class IdentityController extends Controller
     {
         $data = $request->all();
         Identity::createUserCache($id, $data);
-        return \Output::message('che created successfully')->json();
+        return \Output::message('Cache created successfully')->json();
     }
 
     /**
