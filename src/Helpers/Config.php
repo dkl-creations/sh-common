@@ -18,7 +18,7 @@ class Config
 
             $host_parts = explode('.', $_SERVER['HTTP_HOST']);
             $service = isset($host_parts[count($host_parts) - 4]) ? $host_parts[count($host_parts) - 4] : '';
-            $org = $org_data != null ? $org_data['domain'] : '';
+            $org = $org_data != null ? $org_data['code'] : '';
 
             $creds = get_db_creds($service, $org);
             if ( !empty($creds) ) {
