@@ -18,7 +18,8 @@ class PermissionController extends Controller
      */
     public function listAvailablePermissions(Request $request)
     {
-
+        $permissions = config('permissions');
+        return \Output::data($permissions)->json();
     }
 
 }

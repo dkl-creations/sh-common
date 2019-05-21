@@ -4,7 +4,7 @@
 $this->app->router->group(['prefix' => 'v1', 'middleware' => 'auth-timestamp', 'namespace' => 'Lewisqic\SHCommon\Controllers'], function () {
 
     // permissions routes
-    $this->app->router->get('available-permissions', ['uses' => 'PermissionController@listAvailablePermissions']);
+    $this->app->router->get('permissions/available', ['uses' => 'PermissionController@listAvailablePermissions']);
 
     // identity routes
     $this->app->router->post('identity/cache/{id}', ['uses' => 'IdentityController@createCache']);

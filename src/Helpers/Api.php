@@ -21,7 +21,7 @@ class Api
         $request = app('request');
         $method = strtoupper($method);
         if (empty($args[0] || empty($args[1]))) {
-            abort(403, 'Missing required API parameters');
+            fail('Missing required API parameters');
         }
         $url = api_url($args[0], $args[1]);
         $data = null;
@@ -62,10 +62,10 @@ class Api
             $response = $http->request($method, $url, $request_data);
             $data = json_decode((string)$response->getBody(), true);
             if (!empty($data['code']) && preg_match('/^4/', $data['code'])) {
-                abort($data['code'], $data['message']);
+                fail($data['message'], $data['code']);
             }
         } catch (BadResponseException $e) {
-            abort($e->getStatusCode(), $e->getMessage());
+            fail($e->getMessage(), $e->getStatusCode());
         }
 
         return $data;
