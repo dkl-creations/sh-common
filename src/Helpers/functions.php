@@ -80,3 +80,11 @@ function api_url($service, $path = '') {
 function fail($message, $status_code = 403) {
     abort($status_code, $message);
 }
+
+/**
+ * Get our current auth token value
+ */
+function get_current_token() {
+    $token = preg_replace('/^Token\s/', '', \Request::header('authorization'));
+    return $token;
+}
