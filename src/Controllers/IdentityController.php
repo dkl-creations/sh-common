@@ -21,7 +21,7 @@ class IdentityController extends Controller
     {
         $data = $request->all();
         Identity::createUserCache($id, $data);
-        return json(['message' => 'Cache created successfully']);
+        return \Output::message('che created successfully')->json();
     }
 
     /**
@@ -36,7 +36,7 @@ class IdentityController extends Controller
     {
         $data = $request->all();
         Identity::updateUserCache($id, $data);
-        return json(['message' => 'Cache updated successfully']);
+        return \Output::message('Cache updated successfully')->json();
     }
 
     /**
@@ -50,7 +50,7 @@ class IdentityController extends Controller
     public function deleteCache(Request $request, $id)
     {
         Identity::deleteUserCache($id);
-        return json(['message' => 'Cache deleted successfully']);
+        return \Output::message('Cache deleted successfully')->json();
     }
 
 }
