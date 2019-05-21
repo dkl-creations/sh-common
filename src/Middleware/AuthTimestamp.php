@@ -5,7 +5,7 @@ namespace Lewisqic\SHCommon\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Crypt;
 
-class AuthIdentity
+class AuthTimestamp
 {
 
     /**
@@ -19,8 +19,8 @@ class AuthIdentity
     {
         $is_authorized = false;
 
-        if (!empty($request->header('x-sh-identity'))) {
-            $timestamp = Crypt::decrypt($request->header('x-sh-identity'));
+        if (!empty($request->header('x-sh-timestamp'))) {
+            $timestamp = Crypt::decrypt($request->header('x-sh-timestamp'));
             if (is_int($timestamp) && $timestamp >= time()) {
                 $is_authorized = true;
             }

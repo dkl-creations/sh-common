@@ -18,7 +18,7 @@ class PermissionController extends Controller
      */
     public function listAvailablePermissions(Request $request)
     {
-        
+
     }
 
 }

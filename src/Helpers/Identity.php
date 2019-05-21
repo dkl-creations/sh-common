@@ -129,10 +129,10 @@ class Identity
         $config_map = get_config_map();
         foreach ($config_map['keys'] as $service => $key) {
             $crypt = new Encrypter($key, 'AES-256-CBC');
-            $identity_token = $crypt->encrypt(strtotime('+5 minutes'));
+            $timestamp_token = $crypt->encrypt(strtotime('+5 minutes'));
             $response = Api::{$method}($service, 'v1/identity/cache/' . $user_id, $cache_data, [
                 'headers' => [
-                    'X-SH-Identity' => $identity_token
+                    'X-SH-Timestamp' => $timestamp_token
                 ]
             ]);
         }
