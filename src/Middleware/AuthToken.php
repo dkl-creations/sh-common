@@ -71,7 +71,7 @@ class AuthToken
         });
 
         if ($is_authorized == false) {
-            return json(['success' => false, 'message' => 'Unauthorized'], 401);
+            return \Output::code(401)->message('Unauthorized')->json();
         }
 
         return $next($request);
