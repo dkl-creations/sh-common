@@ -50,16 +50,16 @@ abstract class BaseModel extends Model
     /**
      * The default order by clause for a model
      *
-     * @var null
+     * @var array
      */
-    protected static $defaultOrder = null;
+    protected static $defaultOrder = [];
 
     /**
      * Does this model use content object permissions
      *
      * @var bool
      */
-    protected static $usesContentObjectPermissions = null;
+    protected static $usesContentObjectPermissions = false;
 
 
     /******************************************************************
