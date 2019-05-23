@@ -39,13 +39,6 @@ class AuthToken
     public function handle($request, Closure $next)
     {
         $is_authorized = false;
-
-        $user = null;
-        $org = null;
-        $orgs = null;
-        $role = null;
-        $roles = null;
-        $permissions = null;
         $config_map = get_config_map();
         $crypt = new Encrypter($config_map['master_key'], 'AES-256-CBC');
         if (!empty($request->header('x-sh-token'))) {
@@ -60,35 +53,31 @@ class AuthToken
             if (is_int($user_id)) {
                 $cached_data = Identity::getUserCache($token, $user_id);
                 if ( $cached_data && strtotime($cached_data['expires_at']) >= time() ) {
-                    $user = $cached_data['user'];
-                    $org = $cached_data['org'];
-                    $orgs = $cached_data['orgs'];
-                    $role = $cached_data['role'];
-                    $roles = $cached_data['roles'];
-                    $permissions = $cached_data['permissions'];
-                    Config::loadDatabaseCredentials($org);
                     $is_authorized = true;
+
+                    $this->app->singleton('user', function ($app) use ($cached_data) {
+                        return $cached_data['user'];
+                    });
+                    $this->app->singleton('org', function ($app) use ($cached_data) {
+                        return $cached_data['org'];
+                    });
+                    $this->app->singleton('orgs', function ($app) use ($cached_data) {
+                        return $cached_data['orgs'];
+                    });
+                    $this->app->singleton('role', function ($app) use ($cached_data) {
+                        return $cached_data['role'];
+                    });
+                    $this->app->singleton('roles', function ($app) use ($cached_data) {
+                        return $cached_data['roles'];
+                    });
+                    $this->app->singleton('permissions', function ($app) use ($cached_data) {
+                        return $cached_data['permissions'];
+                    });
+
+                    Config::loadDatabaseCredentials($cached_data['org']);
                 }
             }
         }
-        $this->app->singleton('user', function ($app) use ($user) {
-            return $user;
-        });
-        $this->app->singleton('org', function ($app) use ($org) {
-            return $org;
-        });
-        $this->app->singleton('orgs', function ($app) use ($orgs) {
-            return $orgs;
-        });
-        $this->app->singleton('role', function ($app) use ($role) {
-            return $role;
-        });
-        $this->app->singleton('roles', function ($app) use ($roles) {
-            return $roles;
-        });
-        $this->app->singleton('permissions', function ($app) use ($permissions) {
-            return $permissions;
-        });
 
         if ($is_authorized == false) {
             return \Output::code(401)->message('Unauthorized')->json();

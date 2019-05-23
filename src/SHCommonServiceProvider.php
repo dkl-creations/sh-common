@@ -2,6 +2,7 @@
 
 namespace Lewisqic\SHCommon;
 
+use Laravel\Lumen\Application as App;
 use Lewisqic\SHCommon\Migration\MigrateCommand;
 use Lewisqic\SHCommon\Migration\RollbackCommand;
 use Lewisqic\SHCommon\Commands\DbSetCommand;
@@ -15,6 +16,25 @@ use Illuminate\Support\ServiceProvider;
  */
 class SHCommonServiceProvider extends ServiceProvider
 {
+
+    /**
+     * The lumen application
+     *
+     * @var \Laravel\Lumen\Application
+     */
+    protected $app;
+
+    /**
+     * Create a new middleware instance.
+     *
+     * @param  \Laravel\Lumen\Application  $app
+     * @return void
+     */
+    public function __construct(App $app)
+    {
+        $this->app = $app;
+    }
+
     /**
      * Bootstrap any application services.
      *
@@ -43,6 +63,9 @@ class SHCommonServiceProvider extends ServiceProvider
             class_alias('Lewisqic\SHCommon\Helpers\Output', 'Output');
         }
 
+        // register custom application singlton classes
+        $this->registerSingleton();
+
     }
 
     /**
@@ -55,5 +78,27 @@ class SHCommonServiceProvider extends ServiceProvider
         $this->commands([
             DbSetCommand::class
         ]);
+    }
+
+    public function registerSingleton()
+    {
+        $this->app->singleton('user', function ($app) {
+            return null;
+        });
+        $this->app->singleton('org', function ($app) {
+            return null;
+        });
+        $this->app->singleton('orgs', function ($app) {
+            return null;
+        });
+        $this->app->singleton('role', function ($app) {
+            return null;
+        });
+        $this->app->singleton('roles', function ($app) {
+            return null;
+        });
+        $this->app->singleton('permissions', function ($app) {
+            return null;
+        });
     }
 }
