@@ -48,7 +48,7 @@ abstract class BaseService
     public function update($data)
     {
         if ($this->model == null) {
-            fail('Cannot update model, please use "load" first.');
+            fail('No model record has been loaded yet.');
         }
         $this->model->fill($data)->save();
         return $this->model;

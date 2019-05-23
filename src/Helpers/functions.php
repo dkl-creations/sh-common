@@ -93,3 +93,11 @@ function get_current_token() {
     $token = preg_replace('/^Token\s/', '', $request->header('authorization'));
     return $token;
 }
+
+/**
+ * Check if current user has permission for key
+ */
+function has_permission($key) {
+    $permissions = app('permissions');
+    return is_array($permissions) && array_key_exists($key, $permissions) ? true : false;
+}
