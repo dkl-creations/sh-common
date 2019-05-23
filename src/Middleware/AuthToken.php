@@ -36,7 +36,7 @@ class AuthToken
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle($request, Closure $next)
     {
         $is_authorized = false;
 
