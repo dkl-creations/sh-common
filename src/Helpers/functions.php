@@ -98,6 +98,9 @@ function get_current_token() {
  * Check if current user has permission for key
  */
 function has_permission($key) {
+    if (!empty(app('user')) && app('user')['is_super_admin']) {
+        return true;
+    }
     $permissions = app('permissions');
     return is_array($permissions) && array_key_exists($key, $permissions) ? true : false;
 }

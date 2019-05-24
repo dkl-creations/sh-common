@@ -18,6 +18,10 @@ class CheckPermissions
      */
     public function handle($request, Closure $next)
     {
+        if (!empty(app('user')) && app('user')['is_super_admin']) {
+            return $next($request);
+        }
+
         $has_permission = false;
         $user_permissions = app('permissions');
 
