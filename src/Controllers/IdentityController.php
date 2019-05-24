@@ -3,10 +3,9 @@
 namespace Lewisqic\SHCommon\Controllers;
 
 use Lewisqic\SHCommon\Helpers\Identity;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class IdentityController extends Controller
+class IdentityController extends BaseController
 {
 
     /**
