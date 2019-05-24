@@ -17,7 +17,7 @@ class ContentObjectPermissionsScope implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
-        if (!empty(app('user')) && app('user')['is_super_admin']) {
+        if (!empty(app('user')) && app('user')['super_admin_enabled']) {
             return;
         }
         $table = $model->getTable();
