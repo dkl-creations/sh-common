@@ -98,7 +98,7 @@ function get_current_token() {
  * Check if current user has permission for key
  */
 function has_permission($key) {
-    if (!empty(app('user')) && app('user')['super_admin_enabled']) {
+    if (isset(app('user')['super_admin_enabled']) && app('user')['super_admin_enabled']) {
         return true;
     }
     $permissions = app('permissions');
