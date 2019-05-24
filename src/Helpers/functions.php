@@ -52,7 +52,7 @@ function get_orgs_list() {
     $path = pathinfo(base_path($global_file));
     foreach (glob($path['dirname'] . '/*.php') as $filename) {
         $file = basename($filename);
-        if ($file != 'global.php') {
+        if ($file != 'global.php' && $file != 'org_template.php') {
             $orgs[] = preg_replace('/\.php/', '', $file);
         }
     }

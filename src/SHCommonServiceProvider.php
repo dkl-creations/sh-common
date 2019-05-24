@@ -25,7 +25,7 @@ class SHCommonServiceProvider extends ServiceProvider
     protected $app;
 
     /**
-     * Create a new middleware instance.
+     * Create a new provider instance.
      *
      * @param  \Laravel\Lumen\Application  $app
      * @return void
