@@ -43,7 +43,7 @@ class PermissionController extends BaseController
             ->delete();
 
         // create new permissions for each provided role
-        if (is_array($input['roles'])) {
+        if (isset($input['roles']) && is_array($input['roles'])) {
             foreach ($input['roles'] as $role_id) {
                 DB::table('content_object_permissions')->insert([
                     'role_id' => $role_id,
