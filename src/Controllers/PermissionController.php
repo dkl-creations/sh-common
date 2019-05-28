@@ -21,4 +21,16 @@ class PermissionController extends BaseController
         return \Output::data($permissions)->json();
     }
 
+    /**
+     * Update the content object permissions for a given record
+     *
+     * @param Request $request
+     */
+    public function updateContentPermissions(Request $request)
+    {
+        
+        sd($request->all());
+        
+    }
+
 }

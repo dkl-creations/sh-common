@@ -5,6 +5,7 @@ $this->app->router->group(['prefix' => 'v1', 'middleware' => 'auth-timestamp', '
 
     // permissions routes
     $this->app->router->get('permissions/available', ['uses' => 'PermissionController@listAvailablePermissions']);
+    $this->app->router->put('permissions/update', ['uses' => 'PermissionController@updateContentPermissions']);
 
     // identity routes
     $this->app->router->post('identity/cache/{id}', ['uses' => 'IdentityController@createCache']);
