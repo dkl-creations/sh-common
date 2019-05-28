@@ -104,3 +104,15 @@ function has_permission($key) {
     $permissions = app('permissions');
     return is_array($permissions) && array_key_exists($key, $permissions) ? true : false;
 }
+
+/**
+ * Convert our permissions collection into a flat array for cache
+ */
+function prepare_cache_permissions($permissions)
+{
+    $perms = [];
+    foreach ($permissions as $perm) {
+        $perms[$perm['key']] = $perm['value'];
+    }
+    return $perms;
+}

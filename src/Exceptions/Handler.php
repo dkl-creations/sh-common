@@ -47,10 +47,10 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
         $parentRender = parent::render($request, $exception);
-        if ($parentRender instanceof JsonResponse) {
+        if ($parentRender instanceof JsonResponse && !$exception instanceof ValidationException) {
             return $parentRender;
         }
-        $code = method_exists($exception, 'getStatusCode') ? $exception->getStatusCode() : 403;
+        $code = method_exists($exception, 'getStatusCode') ? $exception->getStatusCode() : (isset($exception->status) ? $exception->status : 403);
         $message = method_exists($exception, 'getMessage') ? $exception->getMessage() : 'Unknown Server Error';
         if (empty($message) && $code == 404) {
             $message = 'Page Not Found';
@@ -61,6 +61,13 @@ class Handler extends ExceptionHandler
         if ($exception instanceof \Watson\Validating\ValidationException && !empty($exception->getModel()->getErrors()->all())) {
             $errors = $exception->getModel()->getErrors()->all();
             $message = implode(' ', $errors);
+        }
+        if ($exception instanceof ValidationException && !empty($exception->errors())) {
+            $errors_arr = [];
+            foreach ($exception->errors() as $field => $err) {
+                $errors_arr[] = implode(' ', $err);
+            }
+            $message= implode(' ', $errors_arr);
         }
         if ($exception instanceof ModelNotFoundException) {
             $code = 404;
