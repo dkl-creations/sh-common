@@ -58,16 +58,16 @@ class Handler extends ExceptionHandler
         if (env('APP_DEBUG') == false && $exception instanceof \Illuminate\Database\QueryException) {
             $message = 'Database Query Exception';
         }
-        if ($exception instanceof \Watson\Validating\ValidationException && !empty($exception->getModel()->getErrors()->all())) {
-            $errors = $exception->getModel()->getErrors()->all();
-            $message = implode(' ', $errors);
-        }
         if ($exception instanceof ValidationException && !empty($exception->errors())) {
             $errors_arr = [];
             foreach ($exception->errors() as $field => $err) {
                 $errors_arr[] = implode(' ', $err);
             }
             $message= implode(' ', $errors_arr);
+        }
+        if ($exception instanceof \Watson\Validating\ValidationException && !empty($exception->getModel()->getErrors()->all())) {
+            $errors = $exception->getModel()->getErrors()->all();
+            $message = implode(' ', $errors);
         }
         if ($exception instanceof ModelNotFoundException) {
             $code = 404;
