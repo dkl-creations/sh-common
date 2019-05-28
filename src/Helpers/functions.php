@@ -1,8 +1,10 @@
 <?php
 
 // require Kint debugging library on local only (only include it if it exists)
-if ( file_exists(__DIR__ . '/../../../../../lab/kint_init.php') ) {
-    require_once(__DIR__ . '/../../../../../lab/kint_init.php');
+$global_file = env('CONFIG_MAP');
+$path = pathinfo(base_path($global_file));
+if (file_exists($path['dirname'] . '/../lab/kint_init.php')) {
+    require_once($path['dirname'] . '/../lab/kint_init.php');
 }
 
 /**
@@ -108,8 +110,7 @@ function has_permission($key) {
 /**
  * Convert our permissions collection into a flat array for cache
  */
-function prepare_cache_permissions($permissions)
-{
+function prepare_cache_permissions($permissions) {
     $perms = [];
     foreach ($permissions as $perm) {
         $perms[$perm['key']] = $perm['value'];
