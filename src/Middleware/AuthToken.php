@@ -42,14 +42,22 @@ class AuthToken
         $config_map = get_config_map();
         $crypt = new Encrypter($config_map['master_key'], 'AES-256-CBC');
         if (!empty($request->header('x-sh-token'))) {
-            $token = $crypt->decrypt($request->header('x-sh-token'));
+            try {
+                $token = $crypt->decrypt($request->header('x-sh-token'));
+            } catch (\Exception $e) {
+                fail('Invalid sh token provided.');
+            }
             if ($request->header('referer') == $token['host'] && strtotime($token['expires_at']) >= time()) {
                 Config::loadDatabaseCredentials();
                 $is_authorized = true;
             }
         } elseif (!empty($request->header('authorization'))) {
             $token = get_current_token();
-            $user_id = $crypt->decrypt($token);
+            try {
+                $user_id = $crypt->decrypt($token);
+            } catch (\Exception $e) {
+                fail('Invalid authorization token provided.');
+            }
             if (is_int($user_id)) {
                 $cached_data = Identity::getUserCache($token, $user_id);
                 if ( $cached_data && strtotime($cached_data['expires_at']) >= time() ) {
