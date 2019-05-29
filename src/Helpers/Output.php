@@ -100,9 +100,11 @@ class Output
             'links' => self::$links,
             'meta' => self::$meta,
         ];
-        header('MS-Name: ' . env('APP_SERVICE'));
-        header('MS-Version: 1.0');
-        return response()->json($response, self::$code);
+        return response()->json($response, self::$code)
+            ->withHeaders([
+                'MS-Name' => env('APP_SERVICE'),
+                'MS-Version' => '1.0',
+            ]);
     }
 
 }
