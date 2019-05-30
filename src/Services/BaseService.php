@@ -10,6 +10,20 @@ abstract class BaseService
      */
     public $model = null;
 
+    /**
+     * Create a new service instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        // inject our services as class properties
+        if ( isset($this->services) && is_array($this->services) ) {
+            foreach ($this->services as $property => $class) {
+                $this->{$property} = new $class;
+            }
+        }
+    }
 
     /**
      * Load an existing user record
@@ -24,7 +38,6 @@ abstract class BaseService
         return $this;
     }
 
-
     /**
      * create a new record
      *
@@ -37,7 +50,6 @@ abstract class BaseService
         $record = $model_name::create($data);
         return $record;
     }
-
 
     /**
      * update a record
@@ -67,7 +79,6 @@ abstract class BaseService
         $record->delete();
         return $record;
     }
-
 
     /**
      * restore a record
