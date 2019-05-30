@@ -12,6 +12,12 @@ abstract class BaseModel extends Model
 {
     use ValidatingTrait;
 
+
+    /******************************************************************
+     * MODEL PROPERTIES
+     ******************************************************************/
+
+
     /**
      * The attributes that should be mutated to dates.
      *
@@ -61,10 +67,43 @@ abstract class BaseModel extends Model
      */
     protected static $usesContentObjectPermissions = false;
 
+    /**
+     * Set a group ID for the model
+     *
+     * @var null|int
+     */
+    protected static $modelGroupId = null;
+
+
+    /******************************************************************
+     * MODEL METHODS
+     ******************************************************************/
+
+    /**
+     * Set the group ID for this model
+     *
+     * @param $id
+     */
+    public static function setGroupId($id)
+    {
+        self::$modelGroupId = $id;
+    }
+
+    /**
+     * Get the group ID for this model
+     *
+     * @return int
+     */
+    public static function getGroupId()
+    {
+        return self::$modelGroupId;
+    }
+
 
     /******************************************************************
      * MODEL BOOT METHOD
      ******************************************************************/
+
 
     /**
      * The "booting" method of the model.
@@ -90,11 +129,15 @@ abstract class BaseModel extends Model
         // listen for model events
         static::created(function($model) {
             if (static::$usesContentObjectPermissions && !empty(app('role'))) {
+                $type = get_class($model);
+                $group_id = $type::getGroupId();
+                $model_group_id = !empty($group_id) && $group_id > 0 ? $group_id : null;
                 // create content object permission record
                 DB::table('content_object_permissions')->insert([
                     'role_id' => app('role')['id'],
                     'model_id' => $model->id,
-                    'model_type' => get_class($model),
+                    'model_group_id' => $model_group_id,
+                    'model_type' => $type,
                 ]);
             }
         });

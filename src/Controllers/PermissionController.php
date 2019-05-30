@@ -38,6 +38,9 @@ class PermissionController extends BaseController
 
         // delete previous permissions
         DB::table('content_object_permissions')
+            ->when(!empty($input['model_group_id']), function ($query, $input) {
+                return $query->where('model_group_id', $input['model_group_id']);
+            })
             ->where('model_id', $input['model_id'])
             ->where('model_type', $input['model_type'])
             ->delete();
@@ -48,6 +51,7 @@ class PermissionController extends BaseController
                 DB::table('content_object_permissions')->insert([
                     'role_id' => $role_id,
                     'model_id' => $input['model_id'],
+                    'model_group_id' => !empty($input['model_group_id']) ? $input['model_group_id'] : null,
                     'model_type' => $input['model_type'],
                 ]);
             }

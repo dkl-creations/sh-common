@@ -23,11 +23,14 @@ class ContentObjectPermissionsScope implements Scope
         $table = $model->getTable();
         $type = get_class($model);
         if (!empty(app('role'))) {
-            $builder->whereExists(function($query) use($table, $type) {
+            $group_id = $type::getGroupId();
+            $model_group_id = !empty($group_id) && $group_id > 0 ? $group_id : null;
+            $builder->whereExists(function($query) use($table, $type, $model_group_id) {
                 $query->select('*')
                     ->from('content_object_permissions')
                     ->where('content_object_permissions.role_id', app('role')['id'])
                     ->where('content_object_permissions.model_type', $type)
+                    ->where('content_object_permissions.model_group_id', $model_group_id)
                     ->whereRaw("content_object_permissions.model_id = {$table}.id");
             });
         }
