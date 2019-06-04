@@ -16,7 +16,7 @@ class Api
      * @param $args
      * @return mixed
      */
-    /*public static function __callStatic($method, $args) {
+    public static function __callStatic($method, $args) {
 
         $request = app('request');
         $method = strtoupper($method);
@@ -70,8 +70,19 @@ class Api
 
         return $data;
 
-    }*/
+    }
 
+    /**
+     * Make REST HTTP call
+     *
+     * @param       $method
+     * @param       $service
+     * @param       $route
+     * @param array $params
+     * @param array $options
+     *
+     * @return mixed|null
+     */
     protected static function makeCall($method, $service, $route, $params = [], $options = [])
     {
 
@@ -125,29 +136,29 @@ class Api
 
     }
 
-    public static function get($service, $route, $params = [], $options = [])
+    /*public static function get($service, $route, $params = [], $options = [])
     {
-        return self::makeCall('GET', $service, $route, $params, $options);
+        return static::makeCall('GET', $service, $route, $params, $options);
     }
 
     public static function post($service, $route, $params = [], $options = [])
     {
-        return self::makeCall('POST', $service, $route, $params, $options);
+        return static::makeCall('POST', $service, $route, $params, $options);
     }
 
     public static function put($service, $route, $params = [], $options = [])
     {
-        return self::makeCall('PUT', $service, $route, $params, $options);
+        return static::makeCall('PUT', $service, $route, $params, $options);
     }
 
     public static function patch($service, $route, $params = [], $options = [])
     {
-        return self::makeCall('PATCH', $service, $route, $params, $options);
+        return static::makeCall('PATCH', $service, $route, $params, $options);
     }
 
     public static function delete($service, $route, $params = [], $options = [])
     {
-        return self::makeCall('DELETE', $service, $route, $params, $options);
-    }
+        return static::makeCall('DELETE', $service, $route, $params, $options);
+    }*/
 
 }

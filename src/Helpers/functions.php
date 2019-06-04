@@ -65,8 +65,8 @@ function get_orgs_list() {
  * Generate an absoulte URL to a microservice URL
  */
 function api_url($service, $path = '') {
+    $config_map = get_config_map();
     if (isset($_SERVER['HTTP_HOST'])) {
-        $config_map = get_config_map();
         $host_parts = explode('.', $_SERVER['HTTP_HOST']);
         $host_count = count($host_parts);
         if ( $service == null && isset($host_parts[$host_count - 4]) ) {
@@ -74,10 +74,10 @@ function api_url($service, $path = '') {
         }
         $base = $host_parts[$host_count - 2] . '.' . $host_parts[$host_count - 1];
         $url = (isset($_SERVER['REQUEST_SCHEME']) ? $_SERVER['REQUEST_SCHEME'] : 'http') . '://' . $service . '.' . $config_map['server'] . '.' . $base . (preg_match('/^\//', $path) ? '' : '/') . $path;
-        return $url;
     } else {
-        return '';
+        $url = (env('APP_ENV') == 'production' ? 'https' : 'http') . '://' . $service . '.' . $config_map['server'] . '.' . $config_map['domain'] . (preg_match('/^\//', $path) ? '' : '/') . $path;
     }
+    return $url;
 }
 
 /**
