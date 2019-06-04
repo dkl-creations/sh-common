@@ -16,7 +16,7 @@ class Api
      * @param $args
      * @return mixed
      */
-    public static function __callStatic($method, $args) {
+    /*public static function __callStatic($method, $args) {
 
         $request = app('request');
         $method = strtoupper($method);
@@ -70,7 +70,7 @@ class Api
 
         return $data;
 
-    }
+    }*/
 
     /**
      * Make REST HTTP call
@@ -136,7 +136,7 @@ class Api
 
     }
 
-    /*public static function get($service, $route, $params = [], $options = [])
+    public static function get($service, $route, $params = [], $options = [])
     {
         return static::makeCall('GET', $service, $route, $params, $options);
     }
@@ -159,6 +159,6 @@ class Api
     public static function delete($service, $route, $params = [], $options = [])
     {
         return static::makeCall('DELETE', $service, $route, $params, $options);
-    }*/
+    }
 
 }
