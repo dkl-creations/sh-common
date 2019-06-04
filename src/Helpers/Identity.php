@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Crypt;
+use Lewisqic\SHCommon\Helpers\Api;
 
 class Identity
 {
@@ -126,11 +127,12 @@ class Identity
      */
     private static function runOnAllServices($method, $user_id, $cache_data)
     {
+        $api = app(Api::class);
         $config_map = get_config_map();
         foreach ($config_map['keys'] as $service => $key) {
             $crypt = new Encrypter($key, 'AES-256-CBC');
             $timestamp_token = $crypt->encrypt(strtotime('+5 minutes'));
-            $response = Api::{$method}($service, 'v1/identity/cache/' . $user_id, $cache_data, [
+            $response = $api->{$method}($service, 'v1/identity/cache/' . $user_id, $cache_data, [
                 'headers' => [
                     'X-SH-Timestamp' => $timestamp_token
                 ]
