@@ -83,7 +83,7 @@ class Api
      *
      * @return mixed|null
      */
-    protected static function makeCall($method, $service, $route, $params = [], $options = [])
+    protected function makeCall($method, $service, $route, $params = [], $options = [])
     {
 
         $request = app('request');
@@ -125,8 +125,8 @@ class Api
 
             $response = $http->request($method, $url, $request_data);
             $data = json_decode((string)$response->getBody(), true);
-            if (!empty($data['code']) && preg_match('/^4/', $data['code'])) {
-                fail($data['message'], $data['code']);
+            if (preg_match('/^4/', $response->getStatusCode())) {
+                fail($data['message'], $response->getStatusCode());
             }
         } catch (BadResponseException $e) {
             fail($e->getMessage(), $e->getStatusCode());
@@ -136,29 +136,29 @@ class Api
 
     }
 
-    public static function get($service, $route, $params = [], $options = [])
+    public function get($service, $route, $params = [], $options = [])
     {
-        return static::makeCall('GET', $service, $route, $params, $options);
+        return $this->makeCall('GET', $service, $route, $params, $options);
     }
 
-    public static function post($service, $route, $params = [], $options = [])
+    public function post($service, $route, $params = [], $options = [])
     {
-        return static::makeCall('POST', $service, $route, $params, $options);
+        return $this->makeCall('POST', $service, $route, $params, $options);
     }
 
-    public static function put($service, $route, $params = [], $options = [])
+    public function put($service, $route, $params = [], $options = [])
     {
-        return static::makeCall('PUT', $service, $route, $params, $options);
+        return $this->makeCall('PUT', $service, $route, $params, $options);
     }
 
-    public static function patch($service, $route, $params = [], $options = [])
+    public function patch($service, $route, $params = [], $options = [])
     {
-        return static::makeCall('PATCH', $service, $route, $params, $options);
+        return $this->makeCall('PATCH', $service, $route, $params, $options);
     }
 
-    public static function delete($service, $route, $params = [], $options = [])
+    public function delete($service, $route, $params = [], $options = [])
     {
-        return static::makeCall('DELETE', $service, $route, $params, $options);
+        return $this->makeCall('DELETE', $service, $route, $params, $options);
     }
 
 }
