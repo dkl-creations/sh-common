@@ -71,6 +71,7 @@ class Handler extends ExceptionHandler
         }
         if ($exception instanceof ModelNotFoundException) {
             $code = 404;
+            $message = 'Unable to locate the requested resource';
         }
         return \Output::code($code)->message($message)->json();
     }
