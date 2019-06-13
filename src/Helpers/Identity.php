@@ -70,8 +70,9 @@ class Identity
         $new_data = $data['data'];
         $client_token = $data['token'];
         $old_cache = self::getUserCache($client_token, $id);
-        \Log::debug($old_cache);
-        die();
+        if (empty($old_cache)) {
+            return;
+        }
         $new_cache = array_merge($old_cache, $new_data);
         $new_cache['expires_at'] = date('Y-m-d H:i:s', strtotime('+1 year'));
         $filename = md5($id) . '-' . md5($client_token);
