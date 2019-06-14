@@ -16,10 +16,22 @@ class PermissionController extends BaseController
      *
      * @return json
      */
-    public function listAvailablePermissions(Request $request)
+    public function listServicePermissions(Request $request)
     {
         $permissions = config('permissions');
         return \Output::data($permissions)->json();
+    }
+
+    /**
+     * Return a list of assigned content object permissions
+     *
+     * @param Request $request
+     */
+    public function assignedContentPermissions(Request $request)
+    {
+        
+        sd($request->all());
+        
     }
 
     /**
