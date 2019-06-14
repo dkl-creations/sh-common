@@ -96,12 +96,12 @@ class PermissionController extends BaseController
                     'role_id' => $role_id,
                     'model_id' => $input['model_id'],
                     'model_group_id' => !empty($input['model_group_id']) ? $input['model_group_id'] : null,
-                    'model_type' => $input['model_type'],
+                    'model_type' => 'App\Models\\' . $input['model_type'],
                 ]);
             }
         }
 
-        return \Output::message('Permissions have been updated successfully')->json();
+        return \Output::message('Access permissions have been updated')->json();
 
     }
 
