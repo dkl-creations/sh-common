@@ -4,6 +4,7 @@ namespace Lewisqic\SHCommon\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Lewisqic\SHCommon\Helpers\Api;
 
 class PermissionController extends BaseController
 {
@@ -27,11 +28,42 @@ class PermissionController extends BaseController
      *
      * @param Request $request
      */
-    public function assignedContentPermissions(Request $request)
+    public function assignedContentPermissions(Request $request, Api $api)
     {
-        
-        sd($request->all());
-        
+        $this->validate($request, [
+            'id' => 'required|integer',
+            'type' => 'required',
+        ]);
+        $input = $request->all();
+
+        $result = $api->get('identity', 'v1/roles');
+
+        $available_roles = [];
+        if (isset($result['data']) && is_array($result['data'])) {
+            foreach ($result['data'] as $role) {
+                $available_roles[$role['id']] = $role;
+            }
+        } else {
+            fail('No roles available');
+        }
+
+        $rows = DB::table('content_object_permissions')
+            ->when(!empty($input['group_id']), function ($query, $input) {
+                return $query->where('group_id', $input['group_id']);
+            })
+            ->where('model_id', $input['id'])
+            ->where('model_type', 'App\Models\\' . $input['type'])
+            ->get();
+
+        $assigned_roles = [];
+        foreach ($rows as $row) {
+            $assigned_roles[] = ['id' => $row->role_id, 'name' => $available_roles[$row->role_id]['name']];
+        }
+
+        return \Output::data([
+            'available_roles' => $available_roles,
+            'assigned_roles' => $assigned_roles,
+        ])->json();
     }
 
     /**
