@@ -31,8 +31,8 @@ class PermissionController extends BaseController
     public function assignedContentPermissions(Request $request, Api $api)
     {
         $this->validate($request, [
-            'id' => 'required|integer',
-            'type' => 'required',
+            'model_id' => 'required|integer',
+            'model_type' => 'required',
         ]);
         $input = $request->all();
 
@@ -48,11 +48,11 @@ class PermissionController extends BaseController
         }
 
         $rows = DB::table('content_object_permissions')
-            ->when(!empty($input['group_id']), function ($query, $input) {
+            ->when(!empty($input['model_group_id']), function ($query, $input) {
                 return $query->where('group_id', $input['group_id']);
             })
-            ->where('model_id', $input['id'])
-            ->where('model_type', 'App\Models\\' . $input['type'])
+            ->where('model_id', $input['model_id'])
+            ->where('model_type', 'App\Models\\' . $input['model_type'])
             ->get();
 
         $assigned_roles = [];
@@ -86,7 +86,7 @@ class PermissionController extends BaseController
                 return $query->where('model_group_id', $input['model_group_id']);
             })
             ->where('model_id', $input['model_id'])
-            ->where('model_type', $input['model_type'])
+            ->where('model_type', 'App\Models\\' . $input['model_type'])
             ->delete();
 
         // create new permissions for each provided role
