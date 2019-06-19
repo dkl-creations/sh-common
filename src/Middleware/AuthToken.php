@@ -52,6 +52,23 @@ class AuthToken
                 $is_authorized = true;
             }
         } elseif (!empty($request->header('authorization'))) {
+            // allow admin token
+            if (preg_match('/^Admin/', $request->header('authorization'))) {
+                try {
+                    $data = $crypt->decrypt(preg_replace('/^Admin\s+/', '', $request->header('authorization')));
+                    if (
+                        !isset($data['code']) ||
+                        $data['code'] != 'eoWE2RzwUhd8U3tzfOzQftqJ6Z9E4g1i' ||
+                        !isset($data['expires_at']) ||
+                        strtotime($data['expires_at']) < time()
+                    ) {
+                        fail('Invalid authorization token provided.');
+                    }
+                    return $next($request);
+                } catch (\Exception $e) {
+                    fail('Invalid authorization token provided.');
+                }
+            }
             $token = get_current_token();
             try {
                 $user_id = $crypt->decrypt($token);
