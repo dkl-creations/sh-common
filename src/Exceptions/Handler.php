@@ -1,6 +1,6 @@
 <?php
 
-namespace Lewisqic\SHCommon\Exceptions;
+namespace DklCreations\SHCommon\Exceptions;
 
 use Exception;
 use Illuminate\Http\JsonResponse;

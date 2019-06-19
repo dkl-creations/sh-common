@@ -1,12 +1,12 @@
 <?php
 
-namespace Lewisqic\SHCommon\Models;
+namespace DklCreations\SHCommon\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Watson\Validating\ValidatingTrait;
-use Lewisqic\SHCommon\Scopes\ContentObjectPermissionsScope;
+use DklCreations\SHCommon\Scopes\ContentObjectPermissionsScope;
 
 abstract class BaseModel extends Model
 {

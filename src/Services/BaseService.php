@@ -1,6 +1,6 @@
 <?php
 
-namespace Lewisqic\SHCommon\Services;
+namespace DklCreations\SHCommon\Services;
 
 abstract class BaseService
 {

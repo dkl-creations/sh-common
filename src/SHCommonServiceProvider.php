@@ -1,13 +1,13 @@
 <?php
 
-namespace Lewisqic\SHCommon;
+namespace DklCreations\SHCommon;
 
 use Laravel\Lumen\Application as App;
-use Lewisqic\SHCommon\Migration\MigrateCommand;
-use Lewisqic\SHCommon\Migration\RollbackCommand;
-use Lewisqic\SHCommon\Commands\DbSetCommand;
-use Lewisqic\SHCommon\Exceptions\Handler;
-use Lewisqic\SHCommon\Helpers\Config;
+use DklCreations\SHCommon\Migration\MigrateCommand;
+use DklCreations\SHCommon\Migration\RollbackCommand;
+use DklCreations\SHCommon\Commands\DbSetCommand;
+use DklCreations\SHCommon\Exceptions\Handler;
+use DklCreations\SHCommon\Helpers\Config;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\ServiceProvider;
 
@@ -57,7 +57,7 @@ class SHCommonServiceProvider extends ServiceProvider
 
         // register our custom aliases
         if (!class_exists('Output')) {
-            class_alias('Lewisqic\SHCommon\Helpers\Output', 'Output');
+            class_alias('DklCreations\SHCommon\Helpers\Output', 'Output');
         }
 
         // register custom application singlton classes

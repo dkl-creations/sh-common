@@ -1,12 +1,12 @@
 <?php
 
-namespace Lewisqic\SHCommon\Helpers;
+namespace DklCreations\SHCommon\Helpers;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Crypt;
-use Lewisqic\SHCommon\Helpers\Api;
+use DklCreations\SHCommon\Helpers\Api;
 
 class Identity
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Lewisqic\SHCommon\Controllers;
+namespace DklCreations\SHCommon\Controllers;
 
-use Lewisqic\SHCommon\Helpers\Identity;
+use DklCreations\SHCommon\Helpers\Identity;
 use Illuminate\Http\Request;
 
 class IdentityController extends BaseController

@@ -1,6 +1,6 @@
 <?php
 
-namespace Lewisqic\SHCommon\Helpers;
+namespace DklCreations\SHCommon\Helpers;
 
 use \DateTime;
 

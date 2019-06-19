@@ -1,6 +1,6 @@
 <?php
 
-namespace Lewisqic\SHCommon\Commands;
+namespace DklCreations\SHCommon\Commands;
 
 use Illuminate\Console\Command;
 

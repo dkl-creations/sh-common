@@ -1,6 +1,6 @@
 <?php
 
-$this->app->router->group(['prefix' => 'v1', 'middleware' => 'auth-timestamp', 'namespace' => 'Lewisqic\SHCommon\Controllers'], function () {
+$this->app->router->group(['prefix' => 'v1', 'middleware' => 'auth-timestamp', 'namespace' => 'DklCreations\SHCommon\Controllers'], function () {
 
     // identity routes
     $this->app->router->post('identity/cache/{id}', ['uses' => 'IdentityController@createCache']);
@@ -9,7 +9,7 @@ $this->app->router->group(['prefix' => 'v1', 'middleware' => 'auth-timestamp', '
 
 });
 
-$this->app->router->group(['prefix' => 'v1', 'middleware' => 'auth-token', 'namespace' => 'Lewisqic\SHCommon\Controllers'], function () {
+$this->app->router->group(['prefix' => 'v1', 'middleware' => 'auth-token', 'namespace' => 'DklCreations\SHCommon\Controllers'], function () {
 
     // permissions routes
     $this->app->router->get('permissions/service', ['uses' => 'PermissionController@listServicePermissions']);

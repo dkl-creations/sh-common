@@ -1,6 +1,6 @@
 <?php
 
-namespace Lewisqic\SHCommon\Middleware;
+namespace DklCreations\SHCommon\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;

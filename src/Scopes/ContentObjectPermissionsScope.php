@@ -1,6 +1,6 @@
 <?php
 
-namespace Lewisqic\SHCommon\Scopes;
+namespace DklCreations\SHCommon\Scopes;
 
 use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Database\Eloquent\Model;

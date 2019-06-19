@@ -1,10 +1,10 @@
 <?php
 
-namespace Lewisqic\SHCommon\Controllers;
+namespace DklCreations\SHCommon\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Lewisqic\SHCommon\Helpers\Api;
+use DklCreations\SHCommon\Helpers\Api;
 
 class PermissionController extends BaseController
 {

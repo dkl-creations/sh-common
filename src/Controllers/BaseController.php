@@ -1,6 +1,6 @@
 <?php
 
-namespace Lewisqic\SHCommon\Controllers;
+namespace DklCreations\SHCommon\Controllers;
 
 use Laravel\Lumen\Routing\Controller as LumenController;
 

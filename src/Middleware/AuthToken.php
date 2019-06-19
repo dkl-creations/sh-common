@@ -1,12 +1,12 @@
 <?php
 
-namespace Lewisqic\SHCommon\Middleware;
+namespace DklCreations\SHCommon\Middleware;
 
 use Closure;
 use Laravel\Lumen\Application as App;
 use Illuminate\Encryption\Encrypter;
-use Lewisqic\SHCommon\Helpers\Identity;
-use Lewisqic\SHCommon\Helpers\Config;
+use DklCreations\SHCommon\Helpers\Identity;
+use DklCreations\SHCommon\Helpers\Config;
 
 class AuthToken
 {
