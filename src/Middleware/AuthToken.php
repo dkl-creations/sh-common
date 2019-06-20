@@ -96,7 +96,7 @@ class AuthToken
                         return $cached_data['roles'];
                     });
                     $this->app->singleton('permissions', function ($app) use ($cached_data) {
-                        return $cached_data['permissions'];
+                        return isset($cached_data['permissions']) ? $cached_data['permissions'] : [];
                     });
 
                     Config::loadDatabaseCredentials($cached_data['org']);
