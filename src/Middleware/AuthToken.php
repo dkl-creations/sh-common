@@ -84,16 +84,16 @@ class AuthToken
                         return $cached_data['user'];
                     });
                     $this->app->singleton('org', function ($app) use ($cached_data) {
-                        return $cached_data['org'];
+                        return isset($cached_data['org']) ? $cached_data['org'] : null;
                     });
                     $this->app->singleton('orgs', function ($app) use ($cached_data) {
                         return $cached_data['orgs'];
                     });
                     $this->app->singleton('role', function ($app) use ($cached_data) {
-                        return $cached_data['role'];
+                        return isset($cached_data['role']) ? $cached_data['role'] : null;
                     });
                     $this->app->singleton('roles', function ($app) use ($cached_data) {
-                        return $cached_data['roles'];
+                        return isset($cached_data['roles']) ? $cached_data['roles'] : [];
                     });
                     $this->app->singleton('permissions', function ($app) use ($cached_data) {
                         return isset($cached_data['permissions']) ? $cached_data['permissions'] : [];
