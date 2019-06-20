@@ -99,7 +99,9 @@ class AuthToken
                         return isset($cached_data['permissions']) ? $cached_data['permissions'] : [];
                     });
 
-                    Config::loadDatabaseCredentials($cached_data['org']);
+                    if (isset($cached_data['org'])) {
+                        Config::loadDatabaseCredentials($cached_data['org']);
+                    }
                 }
             }
         }
