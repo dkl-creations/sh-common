@@ -57,7 +57,9 @@ class PermissionController extends BaseController
 
         $assigned_roles = [];
         foreach ($rows as $row) {
-            $assigned_roles[] = ['id' => $row->role_id, 'name' => $available_roles[$row->role_id]['name']];
+            if (isset($available_roles[$row->role_id])) {
+                $assigned_roles[] = ['id' => $row->role_id, 'name' => $available_roles[$row->role_id]['name']];
+            }
         }
 
         return \Output::data([
