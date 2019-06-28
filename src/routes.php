@@ -8,7 +8,7 @@ $this->app->router->group(['prefix' => 'v1', 'middleware' => 'auth-timestamp', '
     $this->app->router->delete('identity/cache/{id}', ['uses' => 'IdentityController@deleteCache']);
 
     // migration routes
-    $this->app->router->post('migrations/run', ['uses' => 'MigrationController@runAll']);
+    $this->app->router->post('migrations/run', ['uses' => 'MigrationController@runMigrations']);
 
 });
 
