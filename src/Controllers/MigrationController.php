@@ -3,6 +3,7 @@
 namespace DklCreations\SHCommon\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 
 class MigrationController extends BaseController
 {
