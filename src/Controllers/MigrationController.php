@@ -42,7 +42,7 @@ class MigrationController extends BaseController
             ]
         ]);
 
-        $result = Artisan::call( 'migrate', [
+        $result = Artisan::call('migrate', [
             '--database' => 'org',
         ]);
 
