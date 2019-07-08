@@ -32,8 +32,8 @@ class Identity
     public static function getUserCache($client_token, $id)
     {
         $filename = md5($id) . '-' . md5($client_token);
-        if (Storage::exists('identity/' . $filename)) {
-            $contents = Storage::get('identity/' . $filename);
+        if (Storage::exists('identity/user/' . $filename)) {
+            $contents = Storage::get('identity/user/' . $filename);
             $data = json_decode(Crypt::decrypt($contents), true);
             if (is_array($data)) {
                 return $data;
@@ -56,7 +56,7 @@ class Identity
         $token_data['expires_at'] = date('Y-m-d H:i:s', strtotime('+1 year'));
         $contents = Crypt::encrypt(json_encode($token_data));
         self::deleteUserCache($id);
-        Storage::put('identity/' . $filename, $contents);
+        Storage::put('identity/user/' . $filename, $contents);
     }
 
     /**
@@ -77,7 +77,7 @@ class Identity
         $new_cache['expires_at'] = date('Y-m-d H:i:s', strtotime('+1 year'));
         $filename = md5($id) . '-' . md5($client_token);
         $contents = Crypt::encrypt(json_encode($new_cache));
-        Storage::put('identity/' . $filename, $contents);
+        Storage::put('identity/user/' . $filename, $contents);
     }
 
     /**
@@ -87,7 +87,7 @@ class Identity
      */
     public static function deleteUserCache($id)
     {
-        $path = storage_path('app/identity/' . md5($id) . '-*');
+        $path = storage_path('app/identity/user/' . md5($id) . '-*');
         File::delete(File::glob($path));
     }
 
@@ -98,7 +98,7 @@ class Identity
      */
     public static function createCacheOnAllServices($data)
     {
-        self::runOnAllServices('post', $data['user_id'], $data);
+        self::runCacheOnAllServices('post', $data['user_id'], $data);
     }
 
     /**
@@ -108,7 +108,7 @@ class Identity
      */
     public static function updateCacheOnAllServices($data)
     {
-        self::runOnAllServices('put', $data['user_id'], $data);
+        self::runCacheOnAllServices('put', $data['user_id'], $data);
     }
 
     /**
@@ -116,9 +116,9 @@ class Identity
      *
      * @param $user
      */
-    public static function deleteCacheFromAllServices($user_id)
+    public static function deleteCacheOnAllServices($user_id)
     {
-        self::runOnAllServices('delete', $user_id, []);
+        self::runCacheOnAllServices('delete', $user_id, []);
     }
 
     /**
@@ -128,14 +128,137 @@ class Identity
      * @param $user_id
      * @param $data
      */
-    private static function runOnAllServices($method, $user_id, $cache_data)
+    private static function runCacheOnAllServices($method, $user_id, $cache_data)
     {
         $api = app(Api::class);
         $config_map = get_config_map();
         foreach ($config_map['keys'] as $service => $key) {
             $crypt = new Encrypter($key, 'AES-256-CBC');
             $timestamp_token = $crypt->encrypt(strtotime('+5 minutes'));
-            $response = $api->{$method}($service, 'v1/identity/cache/' . $user_id, $cache_data, [
+            $response = $api->{$method}($service, 'v1/identity/user-cache/' . $user_id, $cache_data, [
+                'headers' => [
+                    'X-SH-Timestamp' => $timestamp_token
+                ]
+            ]);
+        }
+    }
+
+
+
+
+
+
+
+    /**
+     * Get a users data from the cached filed
+     *
+     * @param $id
+     */
+    public static function getOrgConfig($client_token, $id)
+    {
+        $filename = md5($id) . '-' . md5($client_token);
+        if (Storage::exists('identity/org/' . $filename)) {
+            $contents = Storage::get('identity/org/' . $filename);
+            $data = json_decode(Crypt::decrypt($contents), true);
+            if (is_array($data)) {
+                return $data;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Create the cached identity record for a user
+     *
+     * @param $id
+     * @param $data
+     */
+    public static function createOrgConfig($id, $data)
+    {
+        $token_data = $data['data'];
+        $token_data['expires_at'] = date('Y-m-d H:i:s', strtotime('+1 year'));
+        $contents = Crypt::encrypt(json_encode($token_data));
+        self::deleteOrgConfig($id);
+        Storage::put('identity/org/' . md5($id), $contents);
+    }
+
+    /**
+     * Update the cached identity record for a user
+     *
+     * @param $id
+     * @param $data
+     */
+    public static function updateOrgConfig($id, $data)
+    {
+        $new_data = $data['data'];
+        $client_token = $data['token'];
+        $old_cache = self::getOrgConfig($client_token, $id);
+        if (empty($old_cache)) {
+            return;
+        }
+        $new_cache = array_merge($old_cache, $new_data);
+        $new_cache['expires_at'] = date('Y-m-d H:i:s', strtotime('+1 year'));
+        $filename = md5($id) . '-' . md5($client_token);
+        $contents = Crypt::encrypt(json_encode($new_cache));
+        Storage::put('identity/org/' . $filename, $contents);
+    }
+
+    /**
+     * Delete the user cached data
+     *
+     * @param $data
+     */
+    public static function deleteOrgConfig($id)
+    {
+        $path = storage_path('app/identity/org/' . md5($id));
+        File::delete(File::glob($path));
+    }
+
+    /**
+     * Create the token cache on each MS for a given user
+     *
+     * @param $user
+     */
+    public static function createConfigOnAllServices($data)
+    {
+        self::runConfigOnAllServices('post', $data['org_id'], $data);
+    }
+
+    /**
+     * Update the token cache on each MS for a given user
+     *
+     * @param $user
+     */
+    public static function updateConfigOnAllServices($data)
+    {
+        self::runConfigOnAllServices('put', $data['org_id'], $data);
+    }
+
+    /**
+     * Delete token cache files on each MS for a given user
+     *
+     * @param $user
+     */
+    public static function deleteConfigOnAllServices($org_id)
+    {
+        self::runConfigOnAllServices('delete', $org_id, []);
+    }
+
+    /**
+     * Run specified call on all services via API call
+     *
+     * @param $method
+     * @param $user_id
+     * @param $data
+     */
+    private static function runConfigOnAllServices($method, $org_id, $cache_data)
+    {
+        $api = app(Api::class);
+        $config_map = get_config_map();
+        foreach ($config_map['keys'] as $service => $key) {
+            $crypt = new Encrypter($key, 'AES-256-CBC');
+            $timestamp_token = $crypt->encrypt(strtotime('+5 minutes'));
+            $response = $api->{$method}($service, 'v1/identity/org-config/' . $org_id, $cache_data, [
                 'headers' => [
                     'X-SH-Timestamp' => $timestamp_token
                 ]

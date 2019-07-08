@@ -16,7 +16,7 @@ class IdentityController extends BaseController
      *
      * @return json
      */
-    public function createCache(Request $request, $id)
+    public function createUserCache(Request $request, $id)
     {
         $data = $request->all();
         Identity::createUserCache($id, $data);
@@ -31,7 +31,7 @@ class IdentityController extends BaseController
      *
      * @return json
      */
-    public function updateCache(Request $request, $id)
+    public function updateUserCache(Request $request, $id)
     {
         $data = $request->all();
         Identity::updateUserCache($id, $data);
@@ -46,10 +46,54 @@ class IdentityController extends BaseController
      *
      * @return json
      */
-    public function deleteCache(Request $request, $id)
+    public function deleteUserCache(Request $request, $id)
     {
         Identity::deleteUserCache($id);
         return \Output::message('Cache deleted successfully')->json();
+    }
+
+    /**
+     * Create user data cache record
+     *
+     * @param Request $request
+     * @param         $id
+     *
+     * @return json
+     */
+    public function createOrgConfig(Request $request, $id)
+    {
+        $data = $request->all();
+        Identity::createOrgConfig($id, $data);
+        return \Output::message('Config created successfully')->json();
+    }
+
+    /**
+     * Update user data cache record
+     *
+     * @param Request $request
+     * @param         $id
+     *
+     * @return json
+     */
+    public function updateOrgConfig(Request $request, $id)
+    {
+        $data = $request->all();
+        Identity::updateOrgConfig($id, $data);
+        return \Output::message('Config updated successfully')->json();
+    }
+
+    /**
+     * Delete user data cache record
+     *
+     * @param Request $request
+     * @param         $id
+     *
+     * @return json
+     */
+    public function deleteOrgConfig(Request $request, $id)
+    {
+        Identity::deleteOrgConfig($id);
+        return \Output::message('Config deleted successfully')->json();
     }
 
 }
