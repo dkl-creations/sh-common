@@ -150,13 +150,13 @@ class Identity
 
 
     /**
-     * Get a users data from the cached filed
+     * Get orgs data from the cached filed
      *
      * @param $id
      */
-    public static function getOrgConfig($client_token, $id)
+    public static function getOrgConfig($id)
     {
-        $filename = md5($id) . '-' . md5($client_token);
+        $filename = md5($id);
         if (Storage::exists('identity/org/' . $filename)) {
             $contents = Storage::get('identity/org/' . $filename);
             $data = json_decode(Crypt::decrypt($contents), true);
@@ -168,7 +168,7 @@ class Identity
     }
 
     /**
-     * Create the cached identity record for a user
+     * Create the cached config record for a org
      *
      * @param $id
      * @param $data
@@ -183,7 +183,7 @@ class Identity
     }
 
     /**
-     * Update the cached identity record for a user
+     * Update the cached config record for a org
      *
      * @param $id
      * @param $data
@@ -204,7 +204,7 @@ class Identity
     }
 
     /**
-     * Delete the user cached data
+     * Delete the org cached data
      *
      * @param $data
      */
@@ -215,9 +215,9 @@ class Identity
     }
 
     /**
-     * Create the token cache on each MS for a given user
+     * Create the config cache on each MS for a given org
      *
-     * @param $user
+     * @param $data
      */
     public static function createConfigOnAllServices($data)
     {
@@ -225,9 +225,9 @@ class Identity
     }
 
     /**
-     * Update the token cache on each MS for a given user
+     * Update the config cache on each MS for a given org
      *
-     * @param $user
+     * @param $data
      */
     public static function updateConfigOnAllServices($data)
     {
@@ -235,9 +235,9 @@ class Identity
     }
 
     /**
-     * Delete token cache files on each MS for a given user
+     * Delete token cache files on each MS for a given org
      *
-     * @param $user
+     * @param $org_id
      */
     public static function deleteConfigOnAllServices($org_id)
     {
