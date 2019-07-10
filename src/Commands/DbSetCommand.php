@@ -3,6 +3,8 @@
 namespace DklCreations\SHCommon\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Encryption\Encrypter;
+use DklCreations\SHCommon\Helpers\Api;
 
 class DbSetCommand extends Command
 {
@@ -82,23 +84,42 @@ class DbSetCommand extends Command
 
         } else {
             $orgs = get_orgs_list();
-            array_unshift($orgs, 'all');
-            $org = $this->choice('Which organization?', $orgs);
-            if ($org == 'all') {
-                foreach ($orgs as $org_name) {
-                    if ($org_name != 'all') {
-                        $config_map = get_config_map($org_name);
-                        if ( !isset($config_map['db_credentials'][$this_service]) ) {
-                            $this->error('missing database credentials for org/service');
-                            die();
-                        }
-                        $creds = $config_map['db_credentials'][$this_service];
-                        $this->loadOrgCredentials($creds);
-                        $this->runCommand($cmd, $options);
+
+            $api = app(Api::class);
+            $key = $config_map['keys']['identity'];
+            $crypt = new Encrypter($key, 'AES-256-CBC');
+            $timestamp_token = $crypt->encrypt(strtotime('+5 minutes'));
+            $response = $api->get('identity', 'v1/organizations/all', null, [
+                'headers' => [
+                    'X-SH-Timestamp' => $timestamp_token
+                ]
+            ]);
+            $orgs = $response['data'];
+            $org_names = [];
+            foreach ($orgs as $org) {
+                $org_names[$org['id']] = $org['name'];
+            }
+            $org_names[0] = 'All';
+
+            $selected_org = $this->choice('Which organization?', array_values($org_names));
+
+            $selected_org_id = array_search($selected_org, $org_names);
+
+            if ($selected_org == 0) {
+                foreach ($orgs as $org) {
+                    $config_map = get_config_map($org['id']);
+                    if ( !isset($config_map['db_credentials'][$this_service]) ) {
+                        $this->error('missing database credentials for org/service');
+                        die();
                     }
+                    $creds = $config_map['db_credentials'][$this_service];
+                    s($creds);
+
+                    //$this->loadOrgCredentials($creds);
+                    //$this->runCommand($cmd, $options);
                 }
             } else {
-                $config_map = get_config_map($org);
+                $config_map = get_config_map($selected_org);
                 if (!isset($config_map['db_credentials'][$this_service])) {
                     $this->error('missing database credentials for org/service');
                     die();

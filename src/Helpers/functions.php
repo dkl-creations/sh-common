@@ -10,21 +10,23 @@ if (file_exists($path['dirname'] . '/../lab/kint_init.php')) {
 /**
  * Return an array from our config map file
  */
-function get_config_map($org = null) {
+function get_config_map($org_id = null) {
     $global_file = env('CONFIG_MAP');
     if (!file_exists(base_path($global_file))) {
         die('No global config map found');
     }
     $config_map = include(base_path($global_file));
-    if ($org != null) {
-        $path = pathinfo(base_path($global_file));
-        $org_file = $path['dirname'] . '/' . $org . '.php';
-        if (!file_exists($org_file)) {
-            die('No org config map found');
+    if ($org_id != null) {
+        $cached_data = \DklCreations\SHCommon\Helpers\Identity::getOrgConfig($org_id);
+        if (!empty($cached_data['db_username'])) {
+            foreach ($cached_data['db_databases'] as $service => $db_name) {
+                $config_map['db_credentials'][$service] = [
+                    'DB_DATABASE' => $db_name,
+                    'DB_USERNAME' => $cached_data['db_username'],
+                    'DB_PASSWORD' => $cached_data['db_password'],
+                ];
+            }
         }
-        $org_config = include($org_file);
-        $db_credentials = array_merge($config_map['db_credentials'], $org_config['db_credentials']);
-        $config_map['db_credentials'] = $db_credentials;
     }
     return $config_map;
 }
@@ -32,17 +34,12 @@ function get_config_map($org = null) {
 /**
  * Get our db credentials from our config map
  */
-function get_db_creds($service, $org = '') {
-    $config_map = get_config_map($org);
+function get_db_creds($service, $org_id = '') {
+    $config_map = get_config_map($org_id);
     if ( isset($config_map['db_credentials'][$service]) ) {
         $service_creds = $config_map['db_credentials'][$service];
-        if ( isset($service_creds['DB_DATABASE']) ) {
-            $creds = $service_creds;
-        } elseif ( isset($service_creds[$org]) ) {
-            $creds = $service_creds[$org];
-        }
     }
-    return isset($creds) ? $creds : null;
+    return isset($service_creds) ? $service_creds : null;
 }
 
 /**

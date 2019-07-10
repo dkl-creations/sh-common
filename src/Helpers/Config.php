@@ -18,9 +18,9 @@ class Config
 
             $host_parts = explode('.', $_SERVER['HTTP_HOST']);
             $service = isset($host_parts[count($host_parts) - 4]) ? $host_parts[count($host_parts) - 4] : '';
-            $org = $org_data != null ? $org_data['code'] : '';
+            $org_id = $org_data != null ? $org_data['id'] : '';
 
-            $creds = get_db_creds($service, $org);
+            $creds = get_db_creds($service, $org_id);
             if ( !empty($creds) ) {
                 config(['database.connections.mysql.database' => $creds['DB_DATABASE']]);
                 config(['database.connections.mysql.username' => $creds['DB_USERNAME']]);
