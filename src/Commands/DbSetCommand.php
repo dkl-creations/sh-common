@@ -97,12 +97,12 @@ class DbSetCommand extends Command
             foreach ($orgs as $org) {
                 $org_names[$org['id']] = $org['name'];
             }
-            $org_names[0] = 'All';
+            $org_name_values = array_values($org_names);
+            array_unshift($org_name_values, 'All');
 
-            $selected_org = $this->choice('Which organization?', array_values($org_names));
-            $selected_org_id = array_search($selected_org, $org_names);
+            $selected_org = $this->choice('Which organization?', $org_name_values);
 
-            if ($selected_org == 0) {
+            if ($selected_org == 'All') {
                 foreach ($orgs as $org) {
                     $config_map = get_config_map($org['id']);
                     if ( isset($config_map['db_credentials'][$this_service]) ) {
@@ -112,6 +112,7 @@ class DbSetCommand extends Command
                     }
                 }
             } else {
+                $selected_org_id = array_search($selected_org, $org_names);
                 $config_map = get_config_map($selected_org_id);
                 if (!isset($config_map['db_credentials'][$this_service])) {
                     $this->error('missing database credentials for org/service');
