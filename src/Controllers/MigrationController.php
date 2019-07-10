@@ -2,8 +2,10 @@
 
 namespace DklCreations\SHCommon\Controllers;
 
+use App\Models\Organization;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
+use DklCreations\SHCommon\Helpers\Identity;
 
 class MigrationController extends BaseController
 {
@@ -17,15 +19,11 @@ class MigrationController extends BaseController
      */
     public function runMigrations(Request $request)
     {
-        $org = $request->input('org');
-        $global_file = env('CONFIG_MAP');
-        $path = pathinfo(base_path($global_file));
+        $org_config = Identity::getOrgConfig($request->input('org'));
 
-        if (!file_exists($path['dirname'] . '/' . $org .'.php')) {
-            return;
-        }
+        \Log::debug($org_config);
+        die();
 
-        $org_config = require($path['dirname'] . '/' . $org .'.php');
         $creds = isset($org_config['db_credentials']) && isset($org_config['db_credentials'][env('APP_SERVICE')]) ? $org_config['db_credentials'][env('APP_SERVICE')] : null;
         if ($creds == null) {
             return;

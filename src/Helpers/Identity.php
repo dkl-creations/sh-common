@@ -161,6 +161,15 @@ class Identity
             $contents = Storage::get('identity/org/' . $filename);
             $data = json_decode(Crypt::decrypt($contents), true);
             if (is_array($data)) {
+                if (isset($data['db_databases']) && empty($data['db_databases'])) {
+                    $data['db_databases'] = [];
+                }
+                if (isset($data['services']) && empty($data['services'])) {
+                    $data['services'] = [];
+                }
+                if (isset($data['ui']) && empty($data['ui'])) {
+                    $data['ui'] = [];
+                }
                 return $data;
             }
         }
