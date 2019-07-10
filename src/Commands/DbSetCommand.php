@@ -110,14 +110,14 @@ class DbSetCommand extends Command
                         $this->loadOrgCredentials($creds);
                         $this->runCommand($cmd, $options);
                     } else {
-                        $this->error('missing database credentials for org/service');
+                        $this->error('missing database credentials for: ' . $org['name'] . '/' . $this_service);
                     }
                 }
             } else {
                 $selected_org_id = array_search($selected_org, $org_names);
                 $config_map = get_config_map($selected_org_id);
                 if (!isset($config_map['db_credentials'][$this_service])) {
-                    $this->error('missing database credentials for org/service');
+                    $this->error('missing database credentials for: ' . $selected_org . '/' . $this_service);
                     die();
                 }
                 $creds = $config_map['db_credentials'][$this_service];
