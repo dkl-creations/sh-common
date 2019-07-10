@@ -43,22 +43,6 @@ function get_db_creds($service, $org_id = '') {
 }
 
 /**
- * Get list of orgs from our config files
- */
-function get_orgs_list() {
-    $orgs = [];
-    $global_file = env('CONFIG_MAP');
-    $path = pathinfo(base_path($global_file));
-    foreach (glob($path['dirname'] . '/*.php') as $filename) {
-        $file = basename($filename);
-        if ($file != 'global.php' && $file != 'org_template.php') {
-            $orgs[] = preg_replace('/\.php/', '', $file);
-        }
-    }
-    return $orgs;
-}
-
-/**
  * Generate an absoulte URL to a microservice URL
  */
 function api_url($service, $path = '') {
