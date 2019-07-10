@@ -105,10 +105,12 @@ class DbSetCommand extends Command
             if ($selected_org == 'All') {
                 foreach ($orgs as $org) {
                     $config_map = get_config_map($org['id']);
-                    if ( isset($config_map['db_credentials'][$this_service]) ) {
+                    if (isset($config_map['db_credentials'][$this_service])) {
                         $creds = $config_map['db_credentials'][$this_service];
                         $this->loadOrgCredentials($creds);
                         $this->runCommand($cmd, $options);
+                    } else {
+                        $this->error('missing database credentials for org/service');
                     }
                 }
             } else {

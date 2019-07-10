@@ -22,10 +22,7 @@ class MigrationController extends BaseController
 
         $config = get_config_map($request->input('org'));
 
-        \Log::debug($config);
-        die();
-
-        $creds = isset($org_config['db_credentials']) && isset($org_config['db_credentials'][env('APP_SERVICE')]) ? $org_config['db_credentials'][env('APP_SERVICE')] : null;
+        $creds = isset($config['db_credentials']) && isset($config['db_credentials'][env('APP_SERVICE')]) ? $config['db_credentials'][env('APP_SERVICE')] : null;
         if ($creds == null) {
             return;
         }
