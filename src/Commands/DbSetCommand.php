@@ -83,8 +83,6 @@ class DbSetCommand extends Command
             $this->runCommand($cmd, $options);
 
         } else {
-            $orgs = get_orgs_list();
-
             $api = app(Api::class);
             $key = $config_map['keys']['identity'];
             $crypt = new Encrypter($key, 'AES-256-CBC');
@@ -102,24 +100,19 @@ class DbSetCommand extends Command
             $org_names[0] = 'All';
 
             $selected_org = $this->choice('Which organization?', array_values($org_names));
-
             $selected_org_id = array_search($selected_org, $org_names);
 
             if ($selected_org == 0) {
                 foreach ($orgs as $org) {
                     $config_map = get_config_map($org['id']);
-                    if ( !isset($config_map['db_credentials'][$this_service]) ) {
-                        $this->error('missing database credentials for org/service');
-                        die();
+                    if ( isset($config_map['db_credentials'][$this_service]) ) {
+                        $creds = $config_map['db_credentials'][$this_service];
+                        $this->loadOrgCredentials($creds);
+                        $this->runCommand($cmd, $options);
                     }
-                    $creds = $config_map['db_credentials'][$this_service];
-                    s($creds);
-
-                    //$this->loadOrgCredentials($creds);
-                    //$this->runCommand($cmd, $options);
                 }
             } else {
-                $config_map = get_config_map($selected_org);
+                $config_map = get_config_map($selected_org_id);
                 if (!isset($config_map['db_credentials'][$this_service])) {
                     $this->error('missing database credentials for org/service');
                     die();
