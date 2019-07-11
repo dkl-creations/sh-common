@@ -56,6 +56,11 @@ class DbSetCommand extends Command
         $config_map = get_config_map();
         $this_service = env('APP_SERVICE');
 
+        if (!isset($config_map['db_credentials'][$this_service]) && !in_array($this_service, $config_map['org_dbs'])) {
+            $this->error('This service does not use a database');
+            die();
+        }
+
         $cmd = $this->option('cmd');
         if (empty($cmd)) {
             $cmd = $this->choice('Which command to run?', [

@@ -143,12 +143,6 @@ class Identity
         }
     }
 
-
-
-
-
-
-
     /**
      * Get orgs data from the cached filed
      *
