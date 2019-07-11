@@ -196,7 +196,7 @@ class Identity
         $new_data = $data['data'];
         $old_config = self::getOrgConfig($id);
         if (empty($old_config)) {
-            return;
+            $old_config = self::createOrgConfig($id, $new_data);
         }
         $new_cache = array_merge($old_config, $new_data);
         $new_cache['expires_at'] = date('Y-m-d H:i:s', strtotime('+1 year'));
