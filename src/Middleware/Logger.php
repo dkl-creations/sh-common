@@ -38,7 +38,7 @@ class Logger
             $dataToLog .= 'Input: '  . $request->getContent() . "\n";
             $dataToLog .= 'Output: ' . $response->getContent() . "\n";
             $dataToLog .= 'Code: ' . $response->getStatusCode() . "\n";
-            \Log::debug($dataToLog);
+            \Log::info($dataToLog);
         }
     }
 
