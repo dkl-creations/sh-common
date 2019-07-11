@@ -62,6 +62,19 @@ function api_url($service, $path = '') {
 }
 
 /**
+ * Get our app data if it exists
+ */
+function data($key) {
+    $data = null;
+    try {
+        $data = app($key);
+    } catch (\Exception $e) {
+        // do nothing
+    }
+    return $data;
+}
+
+/**
  * Abort with custom message and status code
  */
 function fail($message, $status_code = 403) {
