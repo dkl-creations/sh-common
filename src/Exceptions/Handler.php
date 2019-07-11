@@ -73,6 +73,9 @@ class Handler extends ExceptionHandler
             $code = 404;
             $message = 'Unable to locate the requested resource';
         }
+        if (env('APP_LOGGER', false)) {
+            \Log::debug($exception);
+        }
         return \Output::code($code)->message($message)->json();
     }
 }

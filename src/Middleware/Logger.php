@@ -9,6 +9,8 @@ use Illuminate\Http\Response;
 class Logger
 {
 
+    private $startTime;
+
     /**
      * Handle an incoming request.
      *
@@ -18,9 +20,7 @@ class Logger
      */
     public function handle($request, Closure $next)
     {
-
-        \Log::debug('first!');
-
+        $this->startTime = microtime(true);
         return $next($request);
     }
 
@@ -30,11 +30,16 @@ class Logger
      */
     public function terminate($request, $response)
     {
-
-        \Log::debug('last!');
-
+        if (env('APP_LOGGER', false) && $request->method() != 'OPTIONS') {
+            $endTime = microtime(true);
+            $dataToLog  = "\n";
+            $dataToLog .= 'URL: '    . $request->fullUrl() . "\n";
+            $dataToLog .= 'Method: ' . $request->method() . "\n";
+            $dataToLog .= 'Input: '  . $request->getContent() . "\n";
+            $dataToLog .= 'Output: ' . $response->getContent() . "\n";
+            $dataToLog .= 'Code: ' . $response->getStatusCode() . "\n";
+            \Log::debug($dataToLog);
+        }
     }
-
-
 
 }
