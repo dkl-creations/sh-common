@@ -103,7 +103,7 @@ class AuthToken
                     if (isset($cached_data['org'])) {
                         $org_config = Identity::getOrgConfig($cached_data['org']['id']);
                         if (isset($org_config['services']) && !in_array(env('APP_SERVICE'), $org_config['services'])) {
-                            fail(strtoupper(env('APP_SERVICE')) . ' service not enabled for your organization', 406);
+                            fail(strtoupper(env('APP_SERVICE')) . ' service not enabled', 406);
                         }
                         Config::loadDatabaseCredentials($cached_data['org']);
                     }
