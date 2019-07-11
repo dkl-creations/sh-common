@@ -143,13 +143,13 @@ abstract class BaseModel extends Model
 
         // listen for model events
         static::created(function($model) {
-            if (static::$usesContentObjectPermissions && !empty(app('role'))) {
+            if (static::$usesContentObjectPermissions && !empty(data('role'))) {
                 $type = get_class($model);
                 $group_id = $type::getGroupId();
                 $model_group_id = !empty($group_id) && $group_id > 0 ? $group_id : null;
                 // create content object permission record
                 DB::table('content_object_permissions')->insert([
-                    'role_id' => app('role')['id'],
+                    'role_id' => data('role')['id'],
                     'model_id' => $model->id,
                     'model_group_id' => $model_group_id,
                     'model_type' => $type,

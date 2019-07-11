@@ -19,14 +19,14 @@ class CheckPermissions
     public function handle($request, Closure $next)
     {
         if (
-            (isset(app('user')['super_admin_enabled']) && app('user')['super_admin_enabled']) ||
+            (isset(data('user')['super_admin_enabled']) && data('user')['super_admin_enabled']) ||
             preg_match('/^Admin/', $request->header('authorization'))
         ) {
             return $next($request);
         }
 
         $has_permission = false;
-        $user_permissions = app('permissions');
+        $user_permissions = data('permissions');
 
         // remove version prefix
         $path = preg_replace('/\/v\d+\//', '', $request->getPathInfo());
