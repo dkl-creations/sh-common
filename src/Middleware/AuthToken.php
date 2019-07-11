@@ -99,6 +99,7 @@ class AuthToken
                         return isset($cached_data['permissions']) ? $cached_data['permissions'] : [];
                     });
 
+                    $org_config = null;
                     if (isset($cached_data['org'])) {
                         $org_config = Identity::getOrgConfig($cached_data['org']['id']);
                         if (isset($org_config['services']) && !in_array(env('APP_SERVICE'), $org_config['services'])) {
@@ -106,6 +107,11 @@ class AuthToken
                         }
                         Config::loadDatabaseCredentials($cached_data['org']);
                     }
+
+                    $this->app->singleton('org_config', function ($app) use ($org_config) {
+                        return $org_config;
+                    });
+
                 }
             }
         }
