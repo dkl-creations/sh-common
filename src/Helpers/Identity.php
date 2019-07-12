@@ -67,17 +67,24 @@ class Identity
      */
     public static function updateUserCache($id, $data)
     {
+        if (isset($data['user_ids']) && is_array($data['user_ids'])) {
+            $user_ids = $data['user_ids'];
+        } else {
+            $user_ids = [$id];
+        }
         $new_data = $data['data'];
         $client_token = $data['token'];
-        $old_cache = self::getUserCache($client_token, $id);
-        if (empty($old_cache)) {
-            return;
+        foreach ($user_ids as $id) {
+            $old_cache = self::getUserCache($client_token, $id);
+            if (empty($old_cache)) {
+                return;
+            }
+            $new_cache = array_merge($old_cache, $new_data);
+            $new_cache['expires_at'] = date('Y-m-d H:i:s', strtotime('+1 year'));
+            $filename = md5($id) . '-' . md5($client_token);
+            $contents = Crypt::encrypt(json_encode($new_cache));
+            Storage::put('identity/user/' . $filename, $contents);
         }
-        $new_cache = array_merge($old_cache, $new_data);
-        $new_cache['expires_at'] = date('Y-m-d H:i:s', strtotime('+1 year'));
-        $filename = md5($id) . '-' . md5($client_token);
-        $contents = Crypt::encrypt(json_encode($new_cache));
-        Storage::put('identity/user/' . $filename, $contents);
     }
 
     /**
@@ -132,6 +139,10 @@ class Identity
     {
         $api = app(Api::class);
         $config_map = get_config_map();
+        if (is_array($user_id)) {
+            $cache_data['user_ids'] = $user_id;
+            $user_id = 0;
+        }
         foreach ($config_map['keys'] as $service => $key) {
             $crypt = new Encrypter($key, 'AES-256-CBC');
             $timestamp_token = $crypt->encrypt(strtotime('+5 minutes'));
