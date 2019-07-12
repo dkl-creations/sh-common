@@ -15,6 +15,8 @@ class Identity
      * Generate a hashed token based on user id
      *
      * @param $id
+     *
+     * @return string
      */
     public static function getPublicToken($id)
     {
@@ -27,7 +29,10 @@ class Identity
     /**
      * Get a users data from the cached filed
      *
+     * @param $client_token
      * @param $id
+     *
+     * @return string|null
      */
     public static function getUserCache($client_token, $id)
     {
@@ -90,7 +95,7 @@ class Identity
     /**
      * Delete the user cached data
      *
-     * @param $data
+     * @param $id
      */
     public static function deleteUserCache($id)
     {
@@ -101,31 +106,37 @@ class Identity
     /**
      * Create the token cache on each MS for a given user
      *
-     * @param $user
+     * @param $data
+     *
+     * @return array
      */
     public static function createCacheOnAllServices($data)
     {
-        self::runCacheOnAllServices('post', $data['user_id'], $data);
+        return self::runCacheOnAllServices('post', $data['user_id'], $data);
     }
 
     /**
      * Update the token cache on each MS for a given user
      *
-     * @param $user
+     * @param $data
+     *
+     * @return array
      */
     public static function updateCacheOnAllServices($data)
     {
-        self::runCacheOnAllServices('put', $data['user_id'], $data);
+        return self::runCacheOnAllServices('put', $data['user_id'], $data);
     }
 
     /**
      * Delete token cache files on each MS for a given user
      *
-     * @param $user
+     * @param $user_id
+     *
+     * @return array
      */
     public static function deleteCacheOnAllServices($user_id)
     {
-        self::runCacheOnAllServices('delete', $user_id, []);
+        return self::runCacheOnAllServices('delete', $user_id, []);
     }
 
     /**
@@ -134,6 +145,8 @@ class Identity
      * @param $method
      * @param $user_id
      * @param $data
+     *
+     * @return array
      */
     private static function runCacheOnAllServices($method, $user_id, $cache_data)
     {
@@ -143,15 +156,21 @@ class Identity
             $cache_data['user_ids'] = $user_id;
             $user_id = 0;
         }
+        $failed_services = [];
         foreach ($config_map['keys'] as $service => $key) {
-            $crypt = new Encrypter($key, 'AES-256-CBC');
-            $timestamp_token = $crypt->encrypt(strtotime('+5 minutes'));
-            $response = $api->{$method}($service, 'v1/identity/user-cache/' . $user_id, $cache_data, [
-                'headers' => [
-                    'X-SH-Timestamp' => $timestamp_token
-                ]
-            ]);
+            try {
+                $crypt = new Encrypter($key, 'AES-256-CBC');
+                $timestamp_token = $crypt->encrypt(strtotime('+5 minutes'));
+                $response = $api->{$method}($service, 'v1/identity/user-cache/' . $user_id, $cache_data, [
+                    'headers' => [
+                        'X-SH-Timestamp' => $timestamp_token
+                    ]
+                ]);
+            } catch (\Exception $e) {
+                $failed_services[] = $service;
+            }
         }
+        return $failed_services;
     }
 
     /**
