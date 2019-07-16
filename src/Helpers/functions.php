@@ -107,7 +107,7 @@ function has_permission($key) {
 function prepare_cache_permissions($permissions) {
     $perms = [];
     foreach ($permissions as $perm) {
-        $perms[$perm['key']] = $perm['value'];
+        $perms[$perm['key'] . '|' . $perm['module']] = $perm['value'];
     }
     return $perms;
 }
