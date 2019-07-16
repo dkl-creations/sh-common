@@ -36,12 +36,14 @@ class PermissionController extends BaseController
         ]);
         $input = $request->all();
 
-        $result = $api->get('identity', 'v1/roles');
+        $result = $api->get('identity', 'v1/roles/all');
 
         $available_roles = [];
         if (isset($result['data']) && is_array($result['data'])) {
             foreach ($result['data'] as $role) {
-                $available_roles[$role['id']] = $role;
+                if (is_array($role['permissions']) && isset($input['key']) && array_key_exists($input['key'], prepare_cache_permissions($role['permissions']))) {
+                    $available_roles[$role['id']] = $role;
+                }
             }
         } else {
             fail('No roles available');
