@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Watson\Validating\ValidatingTrait;
 use DklCreations\SHCommon\Scopes\ContentObjectPermissionsScope;
+use DklCreations\SHCommon\Scopes\LimitResultsScope;
 
 abstract class BaseModel extends Model
 {
@@ -74,6 +75,13 @@ abstract class BaseModel extends Model
      */
     protected static $modelGroupId = null;
 
+    /**
+     * The default limit for all queries
+     *
+     * @var array
+     */
+    protected static $defaultLimit = 100;
+
 
     /******************************************************************
      * MODEL METHODS
@@ -126,6 +134,9 @@ abstract class BaseModel extends Model
     protected static function boot()
     {
         parent::boot();
+
+        // limit all results
+        static::addGlobalScope(new LimitResultsScope(static::$defaultLimit));
 
         // check for content object permissions
         if (static::$usesContentObjectPermissions) {
