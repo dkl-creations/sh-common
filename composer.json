@@ -9,7 +9,9 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {},
+    "require": {
+        "phpseclib/phpseclib": "2.0.21"
+    },
     "autoload": {
         "psr-4": {
             "DklCreations\\SHCommon\\": "src/"
