@@ -9,7 +9,9 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {},
+    "require": {
+        "phpseclib/phpseclib": "dev-master"
+    },
     "autoload": {
         "psr-4": {
             "DklCreations\\SHCommon\\": "src/"
