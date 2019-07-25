@@ -63,6 +63,8 @@ class SHCommonServiceProvider extends ServiceProvider
         // register custom application singlton classes
         $this->registerSingleton();
 
+        $this->app->register(Illuminate\Filesystem\FilesystemServiceProvider::class);
+
     }
 
     /**
