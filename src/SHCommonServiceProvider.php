@@ -65,12 +65,18 @@ class SHCommonServiceProvider extends ServiceProvider
         $this->registerSingleton();
 
         // register filesystem
-        config(['filesystems.default' => 'sftp']);
-        config(['filesystems.disks.sftp' => [
-            'driver' => 'sftp',
-            'host' => '',
-            'username' => '',
-            'password' => '',
+        config(['filesystems.default' => 'local']);
+        config(['filesystems.disks' => [
+            'local' => [
+                'driver' => 'local',
+                'root' => storage_path('app'),
+            ],
+            'public' => [
+                'driver' => 'local',
+                'root' => storage_path('app/public'),
+                'url' => env('APP_URL').'/storage',
+                'visibility' => 'public',
+            ],
         ]]);
         $this->app->register(FilesystemServiceProvider::class);
 
