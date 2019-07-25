@@ -10,6 +10,7 @@ use DklCreations\SHCommon\Exceptions\Handler;
 use DklCreations\SHCommon\Helpers\Config;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Filesystem\FilesystemServiceProvider;
 
 /**
  * Class SHCommonServiceProvider
@@ -63,7 +64,7 @@ class SHCommonServiceProvider extends ServiceProvider
         // register custom application singlton classes
         $this->registerSingleton();
 
-        $this->app->register(Illuminate\Filesystem\FilesystemServiceProvider::class);
+        $this->app->register(FilesystemServiceProvider::class);
 
     }
 
