@@ -64,6 +64,14 @@ class SHCommonServiceProvider extends ServiceProvider
         // register custom application singlton classes
         $this->registerSingleton();
 
+        // register filesystem
+        config(['filesystems.default' => 'sftp']);
+        config(['filesystems.disks.sftp' => [
+            'driver' => 'sftp',
+            'host' => '',
+            'username' => '',
+            'password' => '',
+        ]]);
         $this->app->register(FilesystemServiceProvider::class);
 
     }
