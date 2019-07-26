@@ -28,37 +28,81 @@ class Cdn
         return Storage::disk('sftp')->put(static::preparePath($path), $contents);
     }
 
+    /**
+     * Delete a given file from the server
+     *
+     * @param $path
+     *
+     * @return bool
+     */
     public static function deleteFile($path)
     {
         static::setConfig();
         return Storage::disk('sftp')->delete(static::preparePath($path));
     }
 
-    public static function createDir($path)
+    /**
+     * Make a new directory on the server
+     *
+     * @param $path
+     *
+     * @return bool
+     */
+    public static function makeDir($path)
     {
         static::setConfig();
-        Storage::disk('sftp')->makeDirectory($path);
+        return Storage::disk('sftp')->makeDirectory(static::preparePath($path));
     }
 
+    /**
+     * Delete a directory and all contents from the server
+     *
+     * @param $path
+     *
+     * @return bool
+     */
     public static function deleteDir($path)
     {
         static::setConfig();
-        Storage::disk('sftp')->deleteDirectory($path);
+        return Storage::disk('sftp')->deleteDirectory(static::preparePath($path));
     }
 
-    public static function listFiles($path)
+    /**
+     * Return a list of all files for the given path
+     *
+     * @param      $path
+     * @param bool $recursive
+     *
+     * @return array
+     */
+    public static function listFiles($path = '', $recursive = false)
     {
         static::setConfig();
-        $files = Storage::disk('sftp')->files($path);
-    }
-
-    public static function listDirs($path, $recursive = false)
-    {
-        static::setConfig();
-        $directories = Storage::disk('sftp')->directories($path);
         if ($recursive) {
-            $directories = Storage::disk('sftp')->allDirectories($path);
+            $files = Storage::disk('sftp')->allFiles(static::preparePath($path));
+        } else {
+            $files = Storage::disk('sftp')->files(static::preparePath($path));
         }
+        return static::filterResults($files);
+    }
+
+    /**
+     * Return list of all directories for a given path
+     *
+     * @param string $path
+     * @param bool   $recursive
+     *
+     * @return array
+     */
+    public static function listDirs($path = '', $recursive = false)
+    {
+        static::setConfig();
+        if ($recursive) {
+            $directories = Storage::disk('sftp')->allDirectories(static::preparePath($path));
+        } else {
+            $directories = Storage::disk('sftp')->directories(static::preparePath($path));
+        }
+        return static::filterResults($directories);
     }
 
     /**
@@ -72,6 +116,40 @@ class Cdn
     {
         self::$orgId = $org_id;
         return new static;
+    }
+
+    /**
+     * Prepare the path for the cdn filesystem
+     *
+     * @param $path
+     *
+     * @return string
+     */
+    protected static function preparePath($path)
+    {
+        return 'cdn/' . preg_replace('/^\//', '', $path);
+    }
+
+    /**
+     * Filter file/dir results before we return them
+     *
+     * @param $results
+     *
+     * @return array
+     */
+    protected static function filterResults($results)
+    {
+        $results_filtered = [];
+        foreach ($results as $index => $path) {
+            $path = preg_replace('/^cdn\//', '', $path);
+            if (
+                !preg_match('/\.git/', $path) &&
+                !in_array($path, ['.htaccess', 'filelist.php', 'protected.php', 'thumbs.php'])
+            ) {
+                $results_filtered[] = $path;
+            }
+        }
+        return $results_filtered;
     }
 
     /**
@@ -92,24 +170,12 @@ class Cdn
             'host' => $config['sftp_host'],
             'username' => $config['sftp_username'],
             'password' => $config['sftp_password'],
-            'cache' => [
+            /*'cache' => [
                 'store' => 'memcached',
-                'expire' => 600,
+                'expire' => 60,
                 'prefix' => 'lumen-sftp',
-            ],
+            ],*/
         ]]);
-    }
-
-    /**
-     * Prepare the path for the cdn filesystem
-     *
-     * @param $path
-     *
-     * @return string
-     */
-    protected static function preparePath($path)
-    {
-        return 'cdn/' . preg_replace('/^\//', '', $path);
     }
 
 
