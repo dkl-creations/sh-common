@@ -24,6 +24,10 @@ class Cdn
      */
     public static function uploadFile($path, $contents)
     {
+        // prevent uploads to root directory
+        if (!preg_match('/\//', $path)) {
+            fail('Cannot upload file to CDN root directory');
+        }
         static::setConfig();
         return Storage::disk('sftp')->put(static::preparePath($path), $contents);
     }
