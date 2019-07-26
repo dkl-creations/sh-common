@@ -7,49 +7,109 @@ use Illuminate\Support\Facades\Storage;
 class Cdn
 {
 
-    public static function uploadFile($file)
+    /**
+     * The org ID to use for connection
+     *
+     * @var null
+     */
+    protected static $orgId = null;
+
+    /**
+     * Upload a file to a location on the server
+     *
+     * @param $path
+     * @param $contents
+     *
+     * @return bool
+     */
+    public static function uploadFile($path, $contents)
     {
-
-        Storage::disk('sftp')->put('cdn/avatars/test.txt', 'foobar');
-
+        static::setConfig();
+        return Storage::disk('sftp')->put(static::preparePath($path), $contents);
     }
 
-    public static function deleteFile($file)
+    public static function deleteFile($path)
     {
-        Storage::disk('sftp')->delete('folder_path/file_name.jpg');
+        static::setConfig();
+        return Storage::disk('sftp')->delete(static::preparePath($path));
     }
 
     public static function createDir($path)
     {
-        Storage::makeDirectory($path);
+        static::setConfig();
+        Storage::disk('sftp')->makeDirectory($path);
     }
 
     public static function deleteDir($path)
     {
-        Storage::deleteDirectory($path);
+        static::setConfig();
+        Storage::disk('sftp')->deleteDirectory($path);
     }
 
     public static function listFiles($path)
     {
-        $files = Storage::files($path);
+        static::setConfig();
+        $files = Storage::disk('sftp')->files($path);
     }
 
     public static function listDirs($path, $recursive = false)
     {
-        $directories = Storage::directories($path);
+        static::setConfig();
+        $directories = Storage::disk('sftp')->directories($path);
         if ($recursive) {
-            $directories = Storage::allDirectories($path);
+            $directories = Storage::disk('sftp')->allDirectories($path);
         }
     }
 
+    /**
+     * Set the org to be used for all operations
+     *
+     * @param $org_id
+     *
+     * @return Cdn
+     */
+    public static function org($org_id)
+    {
+        self::$orgId = $org_id;
+        return new static;
+    }
+
+    /**
+     * Set our sftp connection credentials
+     */
     protected static function setConfig()
     {
+        if (self::$orgId != null) {
+            $config = Identity::getOrgConfig(self::$orgId);
+        } else {
+            $config = data('org_config');
+        }
+        if (empty($config['sftp_username'])) {
+            fail('Org does not have valid SFTP credentials set');
+        }
         config(['filesystems.disks.sftp' => [
             'driver' => 'sftp',
-            'host' => '192.168.33.40',
-            'username' => 'acme',
-            'password' => 'foobar',
+            'host' => $config['sftp_host'],
+            'username' => $config['sftp_username'],
+            'password' => $config['sftp_password'],
+            'cache' => [
+                'store' => 'memcached',
+                'expire' => 600,
+                'prefix' => 'lumen-sftp',
+            ],
         ]]);
+    }
+
+    /**
+     * Prepare the path for the cdn filesystem
+     *
+     * @param $path
+     *
+     * @return string
+     */
+    protected static function preparePath($path)
+    {
+        return 'cdn/' . preg_replace('/^\//', '', $path);
     }
 
 
