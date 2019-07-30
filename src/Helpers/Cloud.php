@@ -4,7 +4,7 @@ namespace DklCreations\SHCommon\Helpers;
 
 use Illuminate\Support\Facades\Storage;
 
-class Cdn
+class Cloud
 {
 
     /**
@@ -26,7 +26,7 @@ class Cdn
     {
         // prevent uploads to root directory
         if (!preg_match('/\//', $path)) {
-            fail('Cannot upload file to CDN root directory');
+            fail('Cannot upload file to cloud root directory');
         }
         static::setConfig();
         return Storage::disk('sftp')->put(static::preparePath($path), $contents);
@@ -114,7 +114,7 @@ class Cdn
      *
      * @param $org_id
      *
-     * @return Cdn
+     * @return Cloud
      */
     public static function org($org_id)
     {
@@ -123,7 +123,7 @@ class Cdn
     }
 
     /**
-     * Prepare the path for the cdn filesystem
+     * Prepare the path for the cloud filesystem
      *
      * @param $path
      *
@@ -131,7 +131,7 @@ class Cdn
      */
     protected static function preparePath($path)
     {
-        return 'cdn/' . preg_replace('/^\//', '', $path);
+        return 'cloud/' . preg_replace('/^\//', '', $path);
     }
 
     /**
@@ -145,7 +145,7 @@ class Cdn
     {
         $results_filtered = [];
         foreach ($results as $index => $path) {
-            $path = preg_replace('/^cdn\//', '', $path);
+            $path = preg_replace('/^cloud\//', '', $path);
             if (
                 !preg_match('/\.git/', $path) &&
                 !in_array($path, ['.htaccess', 'filelist.php', 'protected.php', 'thumbs.php'])
@@ -173,7 +173,7 @@ class Cdn
             'driver' => 'sftp',
             'host' => $config['sftp_host'],
             'username' => $config['sftp_username'],
-            'password' => $config['sftp_password'],
+            'privateKey' => $config['sftp_private_key']
             /*'cache' => [
                 'store' => 'memcached',
                 'expire' => 60,
