@@ -18,15 +18,34 @@ class Cloud
      * Upload a file to a location on the server
      *
      * @param $path
+     * @param $file
+     *
+     * @return bool
+     */
+    public static function uploadFile($path, $file)
+    {
+        // prevent uploads to root directory
+        if (empty($path)) {
+            fail('Cannot upload file to cloud root directory');
+        }
+        static::setConfig();
+        $saved_path = Storage::disk('sftp')->putFile(static::preparePath($path), $file);
+        return basename($saved_path);
+    }
+
+    /**
+     * Save file contents to a location on the server
+     *
+     * @param $path
      * @param $contents
      *
      * @return bool
      */
-    public static function uploadFile($path, $contents)
+    public static function saveFile($path, $contents)
     {
         // prevent uploads to root directory
         if (!preg_match('/\//', $path)) {
-            fail('Cannot upload file to cloud root directory');
+            fail('Cannot save file to cloud root directory');
         }
         static::setConfig();
         return Storage::disk('sftp')->put(static::preparePath($path), $contents);
