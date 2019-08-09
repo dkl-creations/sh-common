@@ -15,6 +15,31 @@ class Cloud
     protected static $orgId = null;
 
     /**
+     * Get the file contents of a file on the server
+     *
+     * @param $path
+     *
+     * @return array
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    public static function getFile($path)
+    {
+        static::setConfig();
+        $contents = Storage::disk('sftp')->get(static::preparePath($path));
+        $size = Storage::disk('sftp')->size(static::preparePath($path));
+
+        $ext = pathinfo(basename($path), PATHINFO_EXTENSION);
+        $mimes = new \Mimey\MimeTypes;
+        $type = $mimes->getMimeType($ext);
+        
+        return [
+            'contents' => $contents,
+            'size' => $size,
+            'type' => $type,
+        ];
+    }
+
+    /**
      * Upload a file to a location on the server
      *
      * @param $path
