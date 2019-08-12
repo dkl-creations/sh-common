@@ -31,7 +31,7 @@ class Cloud
         $ext = pathinfo(basename($path), PATHINFO_EXTENSION);
         $mimes = new \Mimey\MimeTypes;
         $type = $mimes->getMimeType($ext);
-        
+
         return [
             'contents' => $contents,
             'size' => $size,
