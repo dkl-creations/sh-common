@@ -100,6 +100,7 @@ class Output
         if (self::$data instanceof \Illuminate\Database\Eloquent\Collection) {
             if ($request->input('only')) {
                 $only = $request->input('only');
+                $only = is_array($only) ? $only : [$only];
                 foreach (self::$data as $row) {
                     $row = $row->toArray();
                     $new_row = [];
@@ -127,6 +128,7 @@ class Output
                 }
             } elseif ($request->input('except')) {
                 $except = $request->input('except');
+                $except = is_array($except) ? $except : [$except];
                 foreach (self::$data as $row) {
                     $row = $row->toArray();
                     foreach ($except as $key) {
