@@ -27,7 +27,7 @@ class CheckEagerLoading implements Scope
     {
         $request = \Illuminate\Http\Request::capture();
         $input = $request->all();
-        if (isset($input['with']) && is_array($input['with'])) {
+        if (!empty($input['with'])) {
             $builder->with($input['with']);
         }
     }
