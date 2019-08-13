@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Watson\Validating\ValidatingTrait;
 use DklCreations\SHCommon\Scopes\ContentObjectPermissionsScope;
 use DklCreations\SHCommon\Scopes\LimitResultsScope;
+use DklCreations\SHCommon\Scopes\CheckEagerLoading;
 
 abstract class BaseModel extends Model
 {
@@ -137,6 +138,9 @@ abstract class BaseModel extends Model
 
         // limit all results
         static::addGlobalScope(new LimitResultsScope(static::$defaultLimit));
+
+        // check for eager loading requests
+        static::addGlobalScope(new CheckEagerLoading());
 
         // check for content object permissions
         if (static::$usesContentObjectPermissions) {

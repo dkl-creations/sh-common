@@ -94,9 +94,62 @@ class Output
      */
     public static function json()
     {
+        $request = \Illuminate\Http\Request::capture();
+
+        $data = [];
+        if (self::$data instanceof \Illuminate\Database\Eloquent\Collection) {
+            if ($request->input('only')) {
+                $only = $request->input('only');
+                foreach (self::$data as $row) {
+                    $row = $row->toArray();
+                    $new_row = [];
+                    foreach ($only as $key) {
+                        if (preg_match('/\./', $key)) {
+                            $parts = explode('.', $key);
+                            $sub_arr = array_get($row, $parts[0]);
+                            $new_sub_row = [];
+                            if (isset($sub_arr) && is_array($sub_arr)) {
+                                foreach ($sub_arr as $sub) {
+                                    $value = array_get($sub, $parts[1]);
+                                    if (isset($value)) {
+                                        $new_row[$parts[0]][$parts[1]] = $value;
+                                    }
+                                }
+                            }
+                        } else {
+                            $value = array_get($row, $key);
+                            if (isset($value)) {
+                                $new_row[$key] = $value;
+                            }
+                        }
+                    }
+                    $data[] = $new_row;
+                }
+            } elseif ($request->input('except')) {
+                $except = $request->input('except');
+                foreach (self::$data as $row) {
+                    $row = $row->toArray();
+                    foreach ($except as $key) {
+                        if (preg_match('/\./', $key)) {
+                            $parts = explode('.', $key);
+                            $sub_arr = array_get($row, $parts[0]);
+                            if (isset($sub_arr) && is_array($sub_arr)) {
+                                foreach ($sub_arr as $index => $sub) {
+                                    unset($row[$parts[0]][$index][$parts[1]]);
+                                }
+                            }
+                        } else {
+                            unset($row[$key]);
+                        }
+                    }
+                    $data[] = $row;
+                }
+            }
+        }
+
         $response = [
             'message' => self::$message,
-            'data' => self::$data,
+            'data' => !empty($data) ? $data : self::$data,
             'links' => self::$links,
             'meta' => self::$meta,
         ];
