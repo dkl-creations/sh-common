@@ -71,6 +71,13 @@ abstract class BaseModel extends Model
     protected static $usesContentObjectPermissions = false;
 
     /**
+     * Does this model allow eager loading via param
+     *
+     * @var bool
+     */
+    protected static $allowParamEagerLoading = false;
+
+    /**
      * Set a group ID for the model
      *
      * @var null|int
@@ -141,7 +148,9 @@ abstract class BaseModel extends Model
         static::addGlobalScope(new LimitResultsScope(static::$defaultLimit));
 
         // check for eager loading requests
-        static::addGlobalScope(new CheckEagerLoading());
+        if (static::$allowParamEagerLoading) {
+            static::addGlobalScope(new CheckEagerLoading());
+        }
 
         // check for content object permissions
         if (static::$usesContentObjectPermissions) {
