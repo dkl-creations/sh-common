@@ -4,8 +4,50 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b3e90c66595f638e59bc3b52ab7beb08",
+    "content-hash": "d59e7d7a4f8d273e1d6df225c240f594",
     "packages": [
+        {
+            "name": "ajcastro/eager-load-pivot-relations",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ajcastro/eager-load-pivot-relations.git",
+                "reference": "ff87634b8d634f9ae024a24ff4b9c68fe39ef7c2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ajcastro/eager-load-pivot-relations/zipball/ff87634b8d634f9ae024a24ff4b9c68fe39ef7c2",
+                "reference": "ff87634b8d634f9ae024a24ff4b9c68fe39ef7c2",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [],
+                    "aliases": []
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AjCastro\\EagerLoadPivotRelations\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Arjon Jason Castro",
+                    "email": "ajcastro29@gmail.com"
+                }
+            ],
+            "description": "Eager load pivot relations for Laravel Eloquent's BelongsToMany relation.",
+            "time": "2019-06-02T13:52:11+00:00"
+        },
         {
             "name": "league/flysystem",
             "version": "dev-master",
@@ -362,7 +404,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "ralouphie/mimey": 20
+        "ralouphie/mimey": 20,
+        "ajcastro/eager-load-pivot-relations": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
