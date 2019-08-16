@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Watson\Validating\ValidatingTrait;
+use AjCastro\EagerLoadPivotRelations\EagerLoadPivotTrait;
 use DklCreations\SHCommon\Scopes\ContentObjectPermissionsScope;
 use DklCreations\SHCommon\Scopes\LimitResultsScope;
 use DklCreations\SHCommon\Scopes\CheckEagerLoading;
 
 abstract class BaseModel extends Model
 {
-    use ValidatingTrait;
+    use ValidatingTrait, EagerLoadPivotTrait;
 
 
     /******************************************************************
