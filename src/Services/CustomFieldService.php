@@ -139,7 +139,8 @@ class CustomFieldService extends BaseService
         $field = parent::delete($id);
 
         try {
-            Schema::table(strtolower($field->resource), function($table) use ($field) {
+            $target_table = $this->getTargetTable($field);
+            Schema::table($target_table, function($table) use ($field) {
                 $table->dropColumn('custom_field_' . $field->id);
             });
         } catch (\Exception $e) {
