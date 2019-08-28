@@ -75,7 +75,7 @@ abstract class BaseModel extends Model
      *
      * @var bool
      */
-    protected static $allowParamEagerLoading = false;
+    protected static $allowParamEagerLoading = true;
 
     /**
      * Set a group ID for the model

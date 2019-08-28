@@ -28,7 +28,17 @@ class CheckEagerLoading implements Scope
         $request = \Illuminate\Http\Request::capture();
         $input = $request->all();
         if (!empty($input['with']) && empty($builder->getEagerLoads())) {
-            $builder->with($input['with']);
+            $model_name = strtolower(class_basename($model));
+            foreach ($input['with'] as $with) {
+                $with_parts = explode('.', $with);
+                if (count($with_parts) > 1) {
+                    $first = array_shift($with_parts);
+                    if (strtolower($first) == $model_name) {
+                        $with_cleaned = implode('.', $with_parts);
+                        $builder->with($with_cleaned);
+                    }
+                }
+            }
         }
     }
 }
