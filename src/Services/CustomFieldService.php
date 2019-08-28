@@ -45,12 +45,14 @@ class CustomFieldService extends BaseService
         // create the custom field record
         $field = parent::create($input);
 
+        $target_table = $this->getTargetTable($field);
+
         // Perform schema for new custom field on resource table
         if ( $field && !$this->noSchemaChange($field->type) ) {
 
             try {
 
-                Schema::table(strtolower($field->resource), function($table) use ($field, $field_map, $decimal) {
+                Schema::table($target_table, function($table) use ($field, $field_map, $decimal) {
                     $parameters = $field_map[$field->type]['parameters'];
                     $column_name = 'custom_field_' . $field->id;
 
@@ -104,9 +106,11 @@ class CustomFieldService extends BaseService
             fail('Textarea/HTML fields cannot be searchable');
         }
 
+        $target_table = $this->getTargetTable($previous_field);
+
         // Update searchable if needed
         if ( isset($input['is_searchable']) && $input['is_searchable'] != $previous_field->is_searchable ) {
-            Schema::table(strtolower($input['resource']), function($table) use ($input, $previous_field) {
+            Schema::table($target_table, function($table) use ($input, $previous_field) {
                 $column_name = 'custom_field_' . $previous_field->id;
                 if ( $input['is_searchable'] )  {
                     $table->index([$column_name], $column_name);
@@ -292,6 +296,27 @@ class CustomFieldService extends BaseService
                 'parameters' => []
             ],
         ];
+    }
+
+    /**
+     * Determine the target table name
+     *
+     * @param $field
+     *
+     * @return string
+     */
+    protected function getTargetTable($field)
+    {
+        $table = null;
+        if (!empty($field->resource)) {
+            $table = strtolower($field->resource);
+        } elseif (!empty($field->group_id)) {
+            $table = 'listings_' . $field->group_id;
+        }
+        if ($table == null) {
+            fail('Unable to determine target table name');
+        }
+        return $table;
     }
 
 }
