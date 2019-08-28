@@ -32,8 +32,7 @@ class CustomFieldService extends BaseService
         }
 
         // determine next display order
-        $last = CustomField::where('resource', $input['resource'])->orderBy('display_order', 'DESC')->first();
-        $input['display_order'] = $last ? $last->display_order + 1 : 1;
+        $input['display_order'] = $this->getNextDisplayOrder($input);
 
         // grab decimal then unset it
         $decimal = null;
@@ -179,10 +178,32 @@ class CustomFieldService extends BaseService
      */
     public function checkMaxLimit($input)
     {
-        $count = CustomField::where('resource', $input['resource'])->count();
+        $count = CustomField::when(isset($input['resource']), function($query, $input) {
+                return $query->where('resource', $input['resource']);
+            })->when(isset($input['group_id']), function($query, $input) {
+                return $query->where('group_id', $input['group_id']);
+            })->count();
         if ($count > 100) {
-            fail('You have created the maximum number of custom fields for this resource type');
+            fail('You have already created the maximum number of custom fields.');
         }
+    }
+
+    /**
+     * Determine the next display order value
+     *
+     * @param $input
+     *
+     * @return int
+     */
+    public function getNextDisplayOrder($input)
+    {
+        $last = CustomField::when(isset($input['resource']), function($query, $input) {
+                return $query->where('resource', $input['resource']);
+            })->when(isset($input['group_id']), function($query, $input) {
+                return $query->where('group_id', $input['group_id']);
+            })->orderBy('display_order', 'DESC')->first();
+        $display_order = $last ? $last->display_order + 1 : 1;
+        return $display_order;
     }
 
     /**
