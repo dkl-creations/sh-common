@@ -34,16 +34,13 @@ class CustomFieldService extends BaseService
         // determine next display order
         $input['display_order'] = $this->getNextDisplayOrder($input);
 
-        // grab decimal then unset it
-        $decimal = null;
-        if (isset($input['decimal'])) {
-            $decimal = $input['decimal'];
-            unset($input['decimal']);
-        }
+        // grab decimal value
+        $decimal = isset($input['decimal']) ? $input['decimal'] : null;
 
         // create the custom field record
         $field = parent::create($input);
 
+        // determine our target table to modify
         $target_table = $this->getTargetTable($field);
 
         // Perform schema for new custom field on resource table
