@@ -102,8 +102,13 @@ abstract class BaseService
     protected function getModelName()
     {
         $service = get_called_class();
-        $model = str_replace('App\Services\\', '', $service);
-        $model_name = 'App\Models\\' . str_replace('Service', '', $model);
+        if (preg_match('/DklCreations/', $service)) {
+            $model = str_replace('DklCreations\SHCommon\Services\\', '', $service);
+            $model_name = 'DklCreations\SHCommon\Models\\' . str_replace('Service', '', $model);
+        } else {
+            $model = str_replace('App\Services\\', '', $service);
+            $model_name = 'App\Models\\' . str_replace('Service', '', $model);
+        }
         return $model_name;
     }
 
