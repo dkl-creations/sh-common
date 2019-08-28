@@ -20,7 +20,6 @@ class CustomField extends BaseModel
      */
     protected $rules = [
         'name' => 'required',
-        'resource' => 'required',
         'type' => 'required'
     ];
 
