@@ -15,7 +15,7 @@ class CustomFieldController extends BaseController
      * Declare services to be injected
      */
     protected $services = [
-        'customFieldService' => \App\Services\CustomFieldService::class
+        'customFieldService' => \DklCreations\SHCommon\Services\CustomFieldService::class
     ];
 
     /**
