@@ -14,9 +14,10 @@ class CheckPermissions
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
+     * @param  $proxy
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle($request, Closure $next, $proxy = false)
     {
         if (
             (isset(data('user')['super_admin_enabled']) && data('user')['super_admin_enabled']) ||
@@ -32,6 +33,12 @@ class CheckPermissions
         $path = preg_replace('/\/v\d+\//', '', $request->getPathInfo());
         // replace digits with id parameter
         $path = preg_replace('/\/\d+/', '/{id}', $path);
+
+        // if proxy is enabled, replace string in path now
+        if ($proxy && preg_match('/=/', $proxy)) {
+            $proxy_arr = explode('=', $proxy);
+            $path = str_replace($proxy_arr[0], $proxy_arr[1], $path);
+        }
 
         // build permissions string
         $permission_string = strtolower($request->getMethod()) . '@' . $path;
