@@ -10,6 +10,7 @@ use AjCastro\EagerLoadPivotRelations\EagerLoadPivotTrait;
 use DklCreations\SHCommon\Scopes\ContentObjectPermissionsScope;
 use DklCreations\SHCommon\Scopes\LimitResultsScope;
 use DklCreations\SHCommon\Scopes\CheckEagerLoading;
+use DklCreations\SHCommon\Helpers\Format;
 
 abstract class BaseModel extends Model
 {
@@ -129,6 +130,37 @@ abstract class BaseModel extends Model
     public static function getGroupId()
     {
         return self::$modelGroupId;
+    }
+
+
+    /******************************************************************
+     * ATTRIBUTE MUTATORS
+     ******************************************************************/
+
+    /**
+     * Set the slug value
+     *
+     * @param  string  $value
+     * @return void
+     */
+    public function setSlugAttribute($value)
+    {
+        if ( empty($value) && isset($this->attributes['title']) ) {
+            $value = $this->attributes['title'];
+        }
+        $slug = Format::slug($value);
+        if (!empty($slug)) {
+            $count = static::where('id', '!=', $this->attributes['id'])
+                ->where(function($query) use($slug) {
+                    $query->where('slug', "{$slug}")
+                        ->orWhere('slug', 'LIKE', "{$slug}-duplicate%");
+                })
+                ->count();
+            if ( $count > 0 ) {
+                $slug = $slug . "-duplicate-" . ($count + 1);
+            }
+        }
+        $this->attributes['slug'] = $slug;
     }
 
 
