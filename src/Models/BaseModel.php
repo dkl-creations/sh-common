@@ -5,6 +5,7 @@ namespace DklCreations\SHCommon\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Watson\Validating\ValidatingTrait;
 use AjCastro\EagerLoadPivotRelations\EagerLoadPivotTrait;
 use DklCreations\SHCommon\Scopes\ContentObjectPermissionsScope;
@@ -20,7 +21,6 @@ abstract class BaseModel extends Model
     /******************************************************************
      * MODEL PROPERTIES
      ******************************************************************/
-
 
     /**
      * The attributes that should be mutated to dates.
@@ -77,6 +77,13 @@ abstract class BaseModel extends Model
      * @var bool
      */
     protected static $allowParamEagerLoading = true;
+
+    /**
+     * Does this model have a slug column
+     *
+     * @var bool
+     */
+    protected static $hasSlug = false;
 
     /**
      * Set a group ID for the model
@@ -148,19 +155,23 @@ abstract class BaseModel extends Model
         if ( empty($value) && isset($this->attributes['title']) ) {
             $value = $this->attributes['title'];
         }
-        $slug = Format::slug($value);
-        if (!empty($slug)) {
-            $count = static::where('id', '!=', $this->attributes['id'])
-                ->where(function($query) use($slug) {
-                    $query->where('slug', "{$slug}")
-                        ->orWhere('slug', 'LIKE', "{$slug}-duplicate%");
+        if (!isset($this->attributes['slug']) || $this->attributes['slug'] != $value) {
+            $slug = Format::slug($value);
+            if ( !empty($slug) ) {
+                $count = static::when(!empty($this->attributes['id']), function ($query) {
+                    return $query->where('id', '!=', $this->attributes['id']);
                 })
-                ->count();
-            if ( $count > 0 ) {
-                $slug = $slug . "-duplicate-" . ($count + 1);
+                    ->where(function ($query) use ($slug) {
+                        $query->where('slug', "{$slug}")
+                            ->orWhere('slug', 'LIKE', "{$slug}-duplicate%");
+                    })
+                    ->count();
+                if ( $count > 0 ) {
+                    $slug = $slug . "-duplicate-" . ($count + 1);
+                }
             }
+            $this->attributes['slug'] = $slug;
         }
-        $this->attributes['slug'] = $slug;
     }
 
 
@@ -197,6 +208,13 @@ abstract class BaseModel extends Model
                 }
             });
         }
+
+        // set our slug to empty on create
+        static::creating(function ($model) {
+            if (static::$hasSlug && !isset($model->slug)) {
+                $model->slug = '';
+            }
+        });
 
         // listen for model events
         static::created(function($model) {
