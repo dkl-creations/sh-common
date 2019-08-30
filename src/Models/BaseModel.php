@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Watson\Validating\ValidatingTrait;
+use Carbon\Carbon;
+use Carbon\CarbonTimeZone;
 use AjCastro\EagerLoadPivotRelations\EagerLoadPivotTrait;
 use DklCreations\SHCommon\Scopes\ContentObjectPermissionsScope;
 use DklCreations\SHCommon\Scopes\LimitResultsScope;
@@ -141,8 +143,57 @@ abstract class BaseModel extends Model
 
 
     /******************************************************************
+     * ATTRIBUTE ACCESSORS
+     ******************************************************************/
+
+    /**
+     * Global accessor for all model attributes
+     *
+     * @return array
+     */
+    protected function getArrayableAttributes()
+    {
+        // convert all timestamp columns to relevant timezone
+        foreach ($this->attributes as $key => $value) {
+            // convert all dates to proper timezone
+            if (preg_match('/_at$/', $key) && !empty($value) && !empty(data('user')['timezone'])) {
+                try {
+                    $date = Carbon::parse($value, 'UTC');
+                    $this->attributes[$key] = $date->setTimezone(data('user')['timezone'])->format('Y-m-d H:i:s');
+                } catch (\Exception $e) {
+                    // do nothing if invalid date format
+                }
+            }
+        }
+        return $this->getArrayableItems($this->attributes);
+    }
+
+
+    /******************************************************************
      * ATTRIBUTE MUTATORS
      ******************************************************************/
+
+    /**
+     * Global mutator for all model attributes
+     *
+     * @param string $key
+     * @param mixed  $value
+     *
+     * @return mixed|void
+     */
+    public function setAttribute($key, $value)
+    {
+        parent::setAttribute($key, $value);
+        // convert all dates into UTC timezone
+        if (preg_match('/_at$/', $key) && !empty($value) && !empty(data('user')['timezone'])) {
+            try {
+                $date = Carbon::parse($value, data('user')['timezone']);
+                $this->attributes[$key] = $date->setTimezone('UTC')->format('Y-m-d H:i:s');
+            } catch (\Exception $e) {
+                // do nothing if invalid date format
+            }
+        }
+    }
 
     /**
      * Set the slug value
