@@ -153,9 +153,14 @@ class Output
             }
         }
 
+        if (!empty($data)) {
+            $response_data = self::$data instanceof \DklCreations\SHCommon\Models\BaseModel ? $data[0] : $data;
+        } else {
+            $response_data = self::$data;
+        }
         $response = [
             'message' => self::$message,
-            'data' => !empty($data) ? $data : self::$data,
+            'data' => $response_data,
             'links' => self::$links,
             'meta' => self::$meta,
         ];
