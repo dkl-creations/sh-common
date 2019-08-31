@@ -97,23 +97,26 @@ class Output
         $request = \Illuminate\Http\Request::capture();
 
         $data = [];
-        if (self::$data instanceof \Illuminate\Database\Eloquent\Collection) {
+        if (
+            self::$data instanceof \Illuminate\Database\Eloquent\Collection ||
+            self::$data instanceof \DklCreations\SHCommon\Models\BaseModel
+        ) {
             if ($request->input('only')) {
                 $only = $request->input('only');
                 $only = is_array($only) ? $only : [$only];
-                foreach (self::$data as $row) {
+                $collection = self::$data instanceof \DklCreations\SHCommon\Models\BaseModel ? [self::$data] : self::$data;
+                foreach ($collection as $row) {
                     $row = $row->toArray();
                     $new_row = [];
                     foreach ($only as $key) {
                         if (preg_match('/\./', $key)) {
                             $parts = explode('.', $key);
                             $sub_arr = array_get($row, $parts[0]);
-                            $new_sub_row = [];
                             if (isset($sub_arr) && is_array($sub_arr)) {
-                                foreach ($sub_arr as $sub) {
+                                foreach ($sub_arr as $index => $sub) {
                                     $value = array_get($sub, $parts[1]);
                                     if (isset($value)) {
-                                        $new_row[$parts[0]][$parts[1]] = $value;
+                                        $new_row[$parts[0]][$index][$parts[1]] = $value;
                                     }
                                 }
                             }
@@ -129,7 +132,8 @@ class Output
             } elseif ($request->input('except')) {
                 $except = $request->input('except');
                 $except = is_array($except) ? $except : [$except];
-                foreach (self::$data as $row) {
+                $collection = self::$data instanceof \DklCreations\SHCommon\Models\BaseModel ? [self::$data] : self::$data;
+                foreach ($collection as $row) {
                     $row = $row->toArray();
                     foreach ($except as $key) {
                         if (preg_match('/\./', $key)) {
