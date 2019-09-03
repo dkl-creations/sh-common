@@ -51,7 +51,7 @@ class PermissionController extends BaseController
 
         $rows = DB::table('content_object_permissions')
             ->when(!empty($input['model_group_id']), function ($query, $input) {
-                return $query->where('group_id', $input['group_id']);
+                return $query->where('model_group_id', $input['model_group_id']);
             })
             ->where('model_id', $input['model_id'])
             ->where('model_type', 'App\Models\\' . $input['model_type'])

@@ -74,6 +74,13 @@ abstract class BaseModel extends Model
     protected static $usesContentObjectPermissions = false;
 
     /**
+     * Additional role IDs for content object permissions
+     *
+     * @var bool
+     */
+    protected static $contentObjectPermissionsExtraRoleIds = [];
+
+    /**
      * Does this model allow eager loading via param
      *
      * @var bool
@@ -274,12 +281,18 @@ abstract class BaseModel extends Model
                 $group_id = $type::getGroupId();
                 $model_group_id = !empty($group_id) && $group_id > 0 ? $group_id : null;
                 // create content object permission record
-                DB::table('content_object_permissions')->insert([
-                    'role_id' => data('role')['id'],
-                    'model_id' => $model->id,
-                    'model_group_id' => $model_group_id,
-                    'model_type' => $type,
-                ]);
+                $roles = [data('role')['id']];
+                if (!empty(static::$contentObjectPermissionsExtraRoleIds)) {
+                    $roles = array_merge($roles, static::$contentObjectPermissionsExtraRoleIds);
+                }
+                foreach (array_unique($roles) as $role_id) {
+                    DB::table('content_object_permissions')->insert([
+                        'role_id' => $role_id,
+                        'model_id' => $model->id,
+                        'model_group_id' => $model_group_id,
+                        'model_type' => $type,
+                    ]);
+                }
             }
         });
 
