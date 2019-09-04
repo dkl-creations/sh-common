@@ -104,10 +104,29 @@ class CustomFieldController extends BaseController
         return \Output::message('Custom Field order has been updated')->data($fields)->json();
     }
 
-
+    /**
+     * List all custom fields for a given resource
+     *
+     * @param Request $request
+     *
+     * @return \DklCreations\SHCommon\Helpers\Output
+     */
     public function listByResource(Request $request)
     {
         $fields = CustomField::where('resource', $request->input('resource'))->where('is_active', true)->get();
+        return \Output::data($fields)->json();
+    }
+
+    /**
+     * List all custom fields for a given group ID
+     *
+     * @param Request $request
+     *
+     * @return \DklCreations\SHCommon\Helpers\Output
+     */
+    public function listByGroup(Request $request)
+    {
+        $fields = CustomField::where('group_id', $request->input('group_id'))->where('is_active', true)->get();
         return \Output::data($fields)->json();
     }
 
