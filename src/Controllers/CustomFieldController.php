@@ -138,10 +138,13 @@ class CustomFieldController extends BaseController
      *
      * @return \Illuminate\Http\Response|\Laravel\Lumen\Http\ResponseFactory
      */
-    public function manageFile(Request $request, $resource, $resource_id, $field_id)
+    public function manageFile(Request $request)
     {
-
-        $path = 'protected/contacts/' . $resource . '/' . $resource_id;
+        $data = json_decode($request->header('X-Data'), true);
+        $path = $data['path'];
+        $resource = $data['resource'];
+        $resource_id = $data['resource_id'];
+        $field_id = $data['field_id'];
 
         if ($request->method() == 'GET') {
             $id = $request->input('load');
