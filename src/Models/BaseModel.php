@@ -34,6 +34,13 @@ abstract class BaseModel extends Model
     ];
 
     /**
+     * User exposed observable events
+     *
+     * @var array
+     */
+    protected $observables = ['validating', 'validated'];
+
+    /**
      * Default validation rules
      *
      * @var array
