@@ -54,7 +54,7 @@ class Cloud
             fail('Cannot upload file to cloud root directory');
         }
         static::setConfig();
-        $saved_path = Storage::disk('sftp')->putFile(static::preparePath($path), $file);
+        $saved_path = Storage::disk('sftp')->putFile(static::preparePath($path), $file, 'public');
         return basename($saved_path);
     }
 
@@ -73,7 +73,7 @@ class Cloud
             fail('Cannot save file to cloud root directory');
         }
         static::setConfig();
-        return Storage::disk('sftp')->put(static::preparePath($path), $contents);
+        return Storage::disk('sftp')->put(static::preparePath($path), $contents, 'public');
     }
 
     /**
@@ -217,7 +217,9 @@ class Cloud
             'driver' => 'sftp',
             'host' => $config['sftp_host'],
             'username' => $config['sftp_username'],
-            'privateKey' => $config['sftp_private_key']
+            'privateKey' => $config['sftp_private_key'],
+            'visibility' => 'public',
+            'directoryPerm' => 0755,
             /*'cache' => [
                 'store' => 'memcached',
                 'expire' => 60,
