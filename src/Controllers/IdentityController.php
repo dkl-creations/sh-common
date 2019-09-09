@@ -53,20 +53,6 @@ class IdentityController extends BaseController
     }
 
     /**
-     * Get org config cache data
-     *
-     * @param Request $request
-     * @param         $id
-     *
-     * @return json
-     */
-    public function getOrgConfig(Request $request, $id)
-    {
-        $config = Identity::getOrgConfig($id);
-        return \Output::data($config)->json();
-    }
-
-    /**
      * Create user data cache record
      *
      * @param Request $request
