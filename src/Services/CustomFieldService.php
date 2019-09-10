@@ -331,6 +331,8 @@ class CustomFieldService extends BaseService
             $table = strtolower($field->resource);
         } elseif (!empty($field->group_id)) {
             $table = 'listings_' . $field->group_id;
+        } elseif (!empty($field->set_id)) {
+            $table = 'entries_' . $field->set_id;
         }
         if ($table == null) {
             fail('Unable to determine target table name');
