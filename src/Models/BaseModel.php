@@ -170,7 +170,7 @@ abstract class BaseModel extends Model
         // convert all timestamp columns to relevant timezone
         foreach ($this->attributes as $key => $value) {
             // convert all dates to proper timezone
-            if (preg_match('/_at$/', $key) && !empty($value) && !empty(data('user')['timezone'])) {
+            if (preg_match('/_at$/', $key) && preg_match('/:\d{2}$/', $value) && !empty($value) && !empty(data('user')['timezone'])) {
                 try {
                     $date = Carbon::parse($value, 'UTC');
                     $this->attributes[$key] = $date->setTimezone(data('user')['timezone'])->format('Y-m-d H:i:s');
@@ -199,7 +199,7 @@ abstract class BaseModel extends Model
     {
         parent::setAttribute($key, $value);
         // convert all dates into UTC timezone
-        if (preg_match('/_at$/', $key) && !empty($value) && !empty(data('user')['timezone'])) {
+        if (preg_match('/_at$/', $key) && preg_match('/:\d{2}$/', $value) && !empty($value) && !empty(data('user')['timezone'])) {
             try {
                 $date = Carbon::parse($value, data('user')['timezone']);
                 $this->attributes[$key] = $date->setTimezone('UTC')->format('Y-m-d H:i:s');
