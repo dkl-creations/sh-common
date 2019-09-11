@@ -219,6 +219,13 @@ abstract class BaseModel extends Model
     {
         if ( empty($value) && isset($this->attributes['title']) ) {
             $value = $this->attributes['title'];
+        } elseif ( empty($value) && isset($this->attributes['address1']) ) {
+            $address1 = $this->attributes['address1'] ?? '';
+            $address2 = $this->attributes['address2'] ?? '';
+            $city = $this->attributes['city'] ?? '';
+            $region = $this->attributes['region'] ?? '';
+            $postal = $this->attributes['postal'] ?? '';
+            $value = trim($address1 . ' ' . $address2 . ' ' . $city . ' ' . $region . ' ' . $postal);
         }
         if (!isset($this->attributes['slug']) || $this->attributes['slug'] != $value) {
             $slug = Format::slug($value);
