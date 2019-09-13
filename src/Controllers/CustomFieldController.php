@@ -42,8 +42,12 @@ class CustomFieldController extends BaseController
      */
     public function list(Request $request)
     {
-        $fields = CustomField::when($request->has('resource'), function($query) use($request) {
+        $fields = CustomField::when($request->has('resource'), function ($query) use ($request) {
             return $query->where('resource', $request->input('resource'));
+        })->when($request->has('group_id'), function ($query) use ($request) {
+            return $query->where('group_id', $request->input('group_id'));
+        })->when($request->has('set_id'), function ($query) use ($request) {
+            return $query->where('set_id', $request->input('set_id'));
         })->get();
         return \Output::data($fields)->json();
     }
