@@ -131,6 +131,19 @@ class CustomFieldController extends BaseController
     }
 
     /**
+     * List all custom fields for a given set ID
+     *
+     * @param Request $request
+     *
+     * @return \DklCreations\SHCommon\Helpers\Output
+     */
+    public function listBySet(Request $request)
+    {
+        $fields = CustomField::where('set_id', $request->input('set_id'))->where('is_active', true)->get();
+        return \Output::data($fields)->json();
+    }
+
+    /**
      * Manage a file uploaded via custom field
      *
      * @param Request $request

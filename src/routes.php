@@ -30,6 +30,7 @@ $this->app->router->group(['prefix' => 'v1', 'middleware' => 'auth-token', 'name
     $this->app->router->delete('custom-fields/{id:\d+}', ['uses' => 'CustomFieldController@delete']);
     $this->app->router->get('custom-fields/list-by-resource', ['uses' => 'CustomFieldController@listByResource']);
     $this->app->router->get('custom-fields/list-by-group', ['uses' => 'CustomFieldController@listByGroup']);
+    $this->app->router->get('custom-fields/list-by-set', ['uses' => 'CustomFieldController@listBySet']);
     $this->app->router->put('custom-fields/set-display-order', ['uses' => 'CustomFieldController@setDisplayOrder']);
     $this->app->router->get('custom-fields/file-management', ['uses' => 'CustomFieldController@manageFile']);
     $this->app->router->post('custom-fields/file-management', ['uses' => 'CustomFieldController@manageFile']);
