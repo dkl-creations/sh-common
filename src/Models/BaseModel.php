@@ -109,6 +109,13 @@ abstract class BaseModel extends Model
     protected static $modelGroupId = null;
 
     /**
+     * Set a set ID for the model
+     *
+     * @var null|int
+     */
+    protected static $modelSetId = null;
+
+    /**
      * The default limit for all queries
      *
      * @var array
@@ -153,6 +160,26 @@ abstract class BaseModel extends Model
     public static function getGroupId()
     {
         return self::$modelGroupId;
+    }
+
+    /**
+     * Set the set ID for this model
+     *
+     * @param $id
+     */
+    public static function setSetId($id)
+    {
+        self::$modelSetId = $id;
+    }
+
+    /**
+     * Get the set ID for this model
+     *
+     * @return int
+     */
+    public static function getSetId()
+    {
+        return self::$modelSetId;
     }
 
 
